@@ -2,8 +2,9 @@
 # -*- coding:utf-8 -*-
 
 import re
-import math
 import subprocess
+from tools import math
+
 
 def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) -> str:
     pingCmd = ['ping', server, '-c', str(count), '-s', str(size), '-w', str(timeout)]
@@ -25,7 +26,7 @@ def ping(server: str, v6First: bool or None, count: int or None,
     if count < 1 or count > 64:  # count between 1 ~ 64
         raise RuntimeError('`count` value out of range')
 
-    if fast is None: fast = bool  # default use fast mode
+    if fast is None: fast = True  # default use fast mode
     if type(fast) != bool:
         raise RuntimeError('invalid `fast` value')
 
@@ -66,7 +67,3 @@ def ping(server: str, v6First: bool or None, count: int or None,
         **math.getArrangeInfo(delay),
         'value': pingResult
     }
-
-
-result = ping('220.181.38.148', v6First=None, count=None, fast=True, size=None, timeout=5)
-print(result)

@@ -2,8 +2,8 @@
 # -*- coding:utf-8 -*-
 
 import re
-import math
 import subprocess
+from tools import math
 
 
 def tcpingProcess(server: str, port: int, count: int, timeout: int) -> str:
@@ -58,6 +58,3 @@ def tcping(server: str, port: int, v6First: bool or None, count: int or None, ti
         **math.getArrangeInfo(tcpingResult),
         'value': [format(x, '.3f') for x in tcpingResult]
     }
-
-ret = tcping('8.210.148.24', port = 80, v6First = None, count = 4, timeout = 2)
-print(ret)
