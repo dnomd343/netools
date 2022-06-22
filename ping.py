@@ -1,4 +1,8 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+
 import re
+import math
 import subprocess
 
 def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) -> str:
@@ -8,6 +12,7 @@ def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) ->
     process = subprocess.Popen(pingCmd, stdout = subprocess.PIPE, stderr = subprocess.DEVNULL)
     process.wait()
     return process.stdout.read().decode()
+
 
 def ping(server: str, v6First: bool or None, count: int or None,
          fast: bool or None, size: int or None, timeout: int or None) -> dict:
@@ -36,18 +41,31 @@ def ping(server: str, v6First: bool or None, count: int or None,
     if timeout < 1 or timeout > 60:  # timeout between 1 ~ 60
         raise RuntimeError('`timeout` value out of range')
 
+    ttlValue = []
     pingResult = []
     rawOutput = pingProcess(server, count, fast, size, timeout).split('\n')
     for i in range(1, len(rawOutput)):  # skip first line
         if rawOutput[i].strip() == '': continue
         if 'ping statistics' in rawOutput[i]: break
         if 'bytes from' not in rawOutput[i]: continue
-        pingResult.append({
-            'seq': int(re.search(r'seq=(\d+)', rawOutput[i])[1]),
-            'ttl': int(re.search(r'ttl=(\d+)', rawOutput[i])[1]),
-            'time': re.search(r'time=([\d.]+)', rawOutput[i])[1],
-        })
-    return {'ret': pingResult}
+        ttlValue.append(int(re.search(r'ttl=(\d+)', rawOutput[i])[1]))
+        pingResult.append(re.search(r'time=([\d.]+)', rawOutput[i])[1])
+    if len(pingResult) == 0:
+        return {'ip': server, 'alive': False}
 
-result = ping('127.0.0.1', v6First=None, count=48, fast=True, size=None, timeout=10)
+    delay = list(sorted(pingResult))
+    if len(delay) > 2:
+        delay.remove(delay[0])  # remove minimal data
+        delay.remove(delay[-1])  # remove maximum data
+    return {
+        'ip': server,  # actual address
+        'alive': True,
+        'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
+        'times': len(pingResult),  # number of successful pings
+        **math.getArrangeInfo(delay),
+        'value': pingResult
+    }
+
+
+result = ping('220.181.38.148', v6First=None, count=None, fast=True, size=None, timeout=5)
 print(result)
