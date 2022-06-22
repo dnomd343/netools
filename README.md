@@ -73,3 +73,31 @@ Example of response:
   ]
 }
 ```
+
+## TLSPing
+
+WIP...
+
+## HTTPing
+
+WIP...
+
+## DIG
+
+WIP...
+
+## DNSLookUp
+
+WIP...
+
+## MTR
+
+WIP...
+
+## TRACE
+
+WIP...
+
+## BestTrace
+
+WIP...
