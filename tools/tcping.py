@@ -14,8 +14,9 @@ def tcpingProcess(server: str, port: int, count: int, timeout: int) -> str:
 
 
 def tcping(server: str, port: int, v6First: bool or None, count: int or None, timeout: int or None) -> dict:
-
-    # TODO: server is domain -> IP address (v4/v6)
+    if server is None:
+        raise RuntimeError('`server` cannot be None')
+    server = basis.address2IP(server, v6First)
 
     if type(port) != int:
         raise RuntimeError('invalid `port` value')

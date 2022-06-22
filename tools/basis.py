@@ -61,7 +61,9 @@ def v6Resolve(domain: str) -> list:
         return []
 
 
-def dnsResolve(domain: str) -> list:
+def dnsResolve(domain: str, v6First: bool = False) -> list:
+    if v6First:
+        return v6Resolve(domain) + v4Resolve(domain)
     return v4Resolve(domain) + v6Resolve(domain)
 
 
@@ -85,3 +87,16 @@ def isIPv6(ipAddr: str) -> bool:
 
 def ipFormat(ipAddr: str) -> str:
     return str(IPy.IP(ipAddr))
+
+
+def address2IP(server: str, v6First: bool or None) -> str:
+    if isIPv4(server):
+        return server  # IPv4 server
+    elif isIPv6(server):
+        return '[' + ipFormat(server) + ']'  # IPv6 server
+    else:
+        if v6First is None: v6First = False  # default IPv4 first
+        server = dnsResolve(server, v6First = v6First)
+        if len(server) == 0:
+            raise RuntimeError('invalid domain name resolve')
+        return server[0]  # use first IP address

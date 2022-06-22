@@ -17,8 +17,9 @@ def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) ->
 
 def ping(server: str, v6First: bool or None, count: int or None,
          fast: bool or None, size: int or None, timeout: int or None) -> dict:
-
-    # TODO: server is domain -> IP address (v4/v6)
+    if server is None:
+        raise RuntimeError('`server` cannot be None')
+    server = basis.address2IP(server, v6First)
 
     if count is None: count = 16  # default times of ping
     if type(count) != int:

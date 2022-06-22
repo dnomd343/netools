@@ -36,9 +36,9 @@ def responseJson(data: dict) -> Response:
     return Response(json.dumps(data), mimetype = 'application/json')
 
 
-def toInt(raw) -> int or None:
+def toInt(raw) -> int or None:  # change to int
     if raw is None:
-        return raw
+        return None
     if isinstance(raw, (int, float)): # int / float -> int
         return int(raw)
     elif isinstance(raw, bytes): # bytes -> str
@@ -51,14 +51,38 @@ def toInt(raw) -> int or None:
         raise Exception('not a integer')
 
 
+def toBool(raw) -> bool or None:  # change to bool
+    if raw is None:
+        return None
+    if isinstance(raw, bool):
+        return raw
+    if isinstance(raw, int):
+        raw = str(raw)
+    elif isinstance(raw, bytes):
+        raw = str(raw, encoding = 'utf-8')
+    elif not isinstance(raw, str):
+        raise Exception('type not allowed')
+    raw = raw.strip().lower()
+    if raw == 'true':
+        return True
+    elif raw == 'false':
+        return False
+    else:
+        try:
+            raw = int(raw)
+            return raw != 0
+        except:
+            raise Exception('not a boolean')
+
+
 @api.route(apiPath + '/ping', methods = ['GET', 'POST'])
 def pingMethod() -> Response:
     args = httpArgument(['server', 'v6First', 'count', 'fast', 'size', 'timeout'])
     try:
         return responseJson({
             'success': True,
-            **ping.ping(args['server'], args['v6First'], toInt(args['count']),
-                        args['fast'], toInt(args['size']), toInt(args['timeout']))
+            **ping.ping(args['server'], toBool(args['v6First']), toInt(args['count']),
+                        toBool(args['fast']), toInt(args['size']), toInt(args['timeout']))
         })
     except Exception as exp:
         return responseJson({
@@ -73,7 +97,7 @@ def tcpingMethod() -> Response:
     try:
         return responseJson({
             'success': True,
-            **tcping.tcping(args['server'], toInt(args['port']), args['v6First'],
+            **tcping.tcping(args['server'], toInt(args['port']), toBool(args['v6First']),
                             toInt(args['count']), toInt(args['timeout']))
         })
     except Exception as exp:
