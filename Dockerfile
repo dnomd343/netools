@@ -7,3 +7,4 @@ RUN apk add build-base git && \
 
 FROM python:alpine3.16
 COPY --from=build /tmp /usr/bin
+RUN pip3 install dnspython flask
