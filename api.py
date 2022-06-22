@@ -24,7 +24,7 @@ def httpPostArg(field: str) -> dict or str or None: # get HTTP POST param
 @api.route(apiPath + '/ping', methods = ['GET', 'POST'])
 def pingMethod() -> dict:
     if request.method == 'GET':
-        # try:
+        try:
             return {
                 'success': True,
                 **ping.ping(
@@ -36,8 +36,8 @@ def pingMethod() -> dict:
                     request.args.get('timeout'),
                 )
             }
-        # except:
-        #     pass
+        except:
+            pass
     elif request.method == 'POST':
         pass
 

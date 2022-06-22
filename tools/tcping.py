@@ -3,7 +3,7 @@
 
 import re
 import subprocess
-from tools import math
+from tools import basis
 
 
 def tcpingProcess(server: str, port: int, count: int, timeout: int) -> str:
@@ -55,6 +55,6 @@ def tcping(server: str, port: int, v6First: bool or None, count: int or None, ti
         'ip': server,  # actual address
         'times': len(tcpingResult),  # number of successful tcpings
         'count': count,  # tried numbers
-        **math.getArrangeInfo(tcpingResult),
+        **basis.getArrangeInfo(tcpingResult),
         'value': [format(x, '.3f') for x in tcpingResult]
     }

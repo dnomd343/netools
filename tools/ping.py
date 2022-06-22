@@ -3,7 +3,7 @@
 
 import re
 import subprocess
-from tools import math
+from tools import basis
 
 
 def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) -> str:
@@ -64,6 +64,6 @@ def ping(server: str, v6First: bool or None, count: int or None,
         'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
         'times': len(pingResult),  # number of successful pings
         'count': count,
-        **math.getArrangeInfo(delay),
+        **basis.getArrangeInfo(delay),
         'value': pingResult
     }
