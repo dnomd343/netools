@@ -22,6 +22,7 @@ Example of response:
   "alive": true,
   "ttl": 38,
   "times": 16,
+  "count": 16,
   "avg": "77.885",
   "cv": "0.105",
   "value": [

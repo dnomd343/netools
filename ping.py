@@ -62,6 +62,7 @@ def ping(server: str, v6First: bool or None, count: int or None,
         'alive': True,
         'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
         'times': len(pingResult),  # number of successful pings
+        'count': count,
         **math.getArrangeInfo(delay),
         'value': pingResult
     }
