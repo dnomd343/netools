@@ -1,11 +1,25 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
+import os
 import json
+import sys
+
 from tools import *
+from gevent import pywsgi
 from flask import Flask, Response, request
 
 apiPath = '/'
+apiPort = 80
+isDebug = False
+
+if 'path' in os.environ:
+    apiPath = os.environ['path']
+if 'port' in os.environ:
+    apiPort = int(os.environ['port'])
+if 'debug' in os.environ and os.environ['debug'].lower() == 'true':
+    isDebug = True
+
 api = Flask(__name__)
 
 
@@ -121,4 +135,11 @@ def tlspingMethod() -> Response:
             'message': str(exp)
         })
 
-api.run(host = '0.0.0.0', port = 80, debug = True)
+
+print('netools start at port ' + str(apiPort))
+if isDebug:
+    print('DEBUG mode enabled')
+    api.run(host = '0.0.0.0', port = apiPort, debug = True, threaded = True)
+else:
+    server = pywsgi.WSGIServer(('0.0.0.0', apiPort), api)
+    server.serve_forever()

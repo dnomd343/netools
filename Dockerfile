@@ -12,5 +12,8 @@ RUN apk add build-base git && \
   mv /go/tcping/tcping /tmp
 
 FROM python:alpine3.16
+WORKDIR /netools
+COPY . /netools
 COPY --from=build /tmp /usr/bin
-RUN pip3 install dnspython flask IPy
+RUN pip3 install dnspython flask gevent IPy
+CMD ["python3", "api.py"]
