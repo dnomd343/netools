@@ -9,7 +9,7 @@ An online network testing toolset.
 | server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
 | v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
 |  count  |  `YES`   | `int`  |  `16`   |  The number of ping requests sent, range `1 - 64`  |
-|  fast   |  `YES`   | `bool` | `true`  |         Ping as soon as reply is recevied          |
+|  fast   |  `YES`   | `bool` | `true`  |         Ping as soon as reply is received          |
 |  size   |  `YES`   | `int`  |  `56`   |      Data bytes in packets, range `4 - 1016`       |
 | timeout |  `YES`   | `int`  |  `20`   |    Time limit for all requests, range `1 - 60`     |
 
@@ -74,9 +74,31 @@ Example of response:
 }
 ```
 
-## TLSPing
+## TlsPing
 
-WIP...
+|  Field  | Optional |  Type  | Default |                      Describe                      |
+|:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
+| server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
+|  port   |   `NO`   | `str`  |         |     TCP port for connection, range `1 - 65535`     |
+|  host   |  `YES`   | `str`  | server  |          SNI parameter in TLS connection           |
+| v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
+|  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tryed, range `1 - 16` |
+
+Example of response:
+
+```
+{
+  "ip": "8.210.148.24",
+  "port": 443,
+  "host": "ip.343.re"
+  "times": 4,
+  "count": 4,
+  "avg": "73.425",
+  "min": "69.817",
+  "max": "78.225",
+  "stddev": "3.708"
+}
+```
 
 ## HTTPing
 
