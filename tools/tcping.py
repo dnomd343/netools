@@ -2,13 +2,12 @@
 # -*- coding:utf-8 -*-
 
 import re
-import subprocess
 from tools import basis
 
 
 def tcpingProcess(server: str, port: int, count: int, timeout: int) -> str:
     tcpingCmd = ['tcping', server, str(port), '--counter', str(count), '--timeout', str(timeout) + 's']
-    process = subprocess.Popen(tcpingCmd, stdout = subprocess.PIPE, stderr = subprocess.DEVNULL)
+    process = basis.startProcess(tcpingCmd)
     process.wait()
     return process.stdout.read().decode()
 

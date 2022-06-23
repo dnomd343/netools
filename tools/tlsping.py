@@ -2,14 +2,13 @@
 # -*- coding:utf-8 -*-
 
 import json
-import subprocess
 from tools import basis
 
 
 def tlspingProcess(server: str, port: int, host: str, count: int) -> str:
     tlspingCmd = ['tlsping', '-json', '-c', str(count)] + \
                  ([] if host == '' else ['-host', host]) + [server + ":" + str(port)]
-    process = subprocess.Popen(tlspingCmd, stdout = subprocess.PIPE, stderr = subprocess.DEVNULL)
+    process = basis.startProcess(tlspingCmd)
     process.wait()
     return process.stdout.read().decode()
 

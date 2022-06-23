@@ -1,8 +1,34 @@
 #!/usr/bin/python3
 # -*- coding:utf-8 -*-
 
+import os
 import IPy
+import ctypes
+import signal
+import subprocess
 from dns import resolver
+
+libcPaths = [
+    '/usr/lib/libc.so.6', # CentOS
+    '/usr/lib64/libc.so.6',
+    '/lib/libc.musl-i386.so.1', # Alpine
+    '/lib/libc.musl-x86_64.so.1',
+    '/lib/libc.musl-aarch64.so.1',
+    '/lib/i386-linux-gnu/libc.so.6', # Debian / Ubuntu
+    '/lib/x86_64-linux-gnu/libc.so.6',
+    '/lib/aarch64-linux-gnu/libc.so.6',
+]
+
+
+def startProcess(processCmd: list, envVar: dict or None = None):
+    for libcPath in libcPaths:
+        if os.path.exists(libcPath):  # Locate libc.so file
+            break
+    return subprocess.Popen(  # start sub-process
+        processCmd, env = envVar,
+        stdout = subprocess.PIPE, stderr = subprocess.DEVNULL,
+        preexec_fn = lambda: ctypes.CDLL(libcPath).prctl(1, signal.SIGTERM)
+    )
 
 
 def getAverage(arrange: list) -> float:

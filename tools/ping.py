@@ -2,7 +2,6 @@
 # -*- coding:utf-8 -*-
 
 import re
-import subprocess
 from tools import basis
 
 
@@ -10,7 +9,7 @@ def pingProcess(server: str, count: int, fast: bool, size: int, timeout: int) ->
     pingCmd = ['ping', server, '-c', str(count), '-s', str(size), '-w', str(timeout)]
     if fast:  # fast mode
         pingCmd.append('-A')
-    process = subprocess.Popen(pingCmd, stdout = subprocess.PIPE, stderr = subprocess.DEVNULL)
+    process = basis.startProcess(pingCmd)
     process.wait()
     return process.stdout.read().decode()
 
