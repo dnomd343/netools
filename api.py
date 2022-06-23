@@ -3,14 +3,13 @@
 
 import os
 import json
-import sys
 
 from tools import *
 from gevent import pywsgi
 from flask import Flask, Response, request
 
 apiPath = '/'
-apiPort = 80
+apiPort = 5633
 isDebug = False
 
 if 'path' in os.environ:

@@ -16,4 +16,5 @@ WORKDIR /netools
 COPY . /netools
 COPY --from=build /tmp /usr/bin
 RUN pip3 install dnspython flask gevent IPy
+EXPOSE 5633
 CMD ["python3", "api.py"]
