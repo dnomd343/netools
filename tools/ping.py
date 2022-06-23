@@ -42,28 +42,29 @@ def ping(server: str, v6First: bool or None, count: int or None,
     if timeout < 1 or timeout > 60:  # timeout between 1 ~ 60
         raise RuntimeError('`timeout` value out of range')
 
+    sendTimes = 0
     ttlValue = []
     pingResult = []
     rawOutput = pingProcess(server, count, fast, size, timeout).split('\n')
     for i in range(1, len(rawOutput)):  # skip first line
         if rawOutput[i].strip() == '': continue
-        if 'ping statistics' in rawOutput[i]: break
+        if 'ping statistics' in rawOutput[i]:  # statistics info after this line
+            sendTimes = re.search(r'(\d+) packets transmitted', rawOutput[i + 1])[1]
+            break
         if 'bytes from' not in rawOutput[i]: continue
         ttlValue.append(int(re.search(r'ttl=(\d+)', rawOutput[i])[1]))
         pingResult.append(re.search(r'time=([\d.]+)', rawOutput[i])[1])
     if len(pingResult) == 0:
-        return {'ip': server, 'alive': False}
+        return {'ip': server, 'alive': False}  # none returned
 
-    delay = list(sorted(pingResult))
-    if len(delay) > 2:
-        delay.remove(delay[0])  # remove minimal data
-        delay.remove(delay[-1])  # remove maximum data
     return {
         'ip': server,  # actual address
         'alive': True,
         'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
-        'times': len(pingResult),  # number of successful pings
-        'count': count,
-        **basis.getArrangeInfo(delay),
-        'value': pingResult
+        'statistics': {
+            'count': int(sendTimes),  # number of transmit pings
+            'reply': len(pingResult),  # number of successful pings
+            'rate': format(len(pingResult) / int(sendTimes) * 100, '.1f') + '%',  # success rate
+            **basis.getArrangeInfo(pingResult)
+        }
     }

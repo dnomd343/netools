@@ -20,14 +20,14 @@ libcPaths = [
 ]
 
 
-def startProcess(processCmd: list, envVar: dict or None = None):
+def startProcess(processCmd: list, envVar: dict or None = None):  # start a sub-process
     for libcPath in libcPaths:
-        if os.path.exists(libcPath):  # Locate libc.so file
+        if os.path.exists(libcPath):  # locate libc.so file
             break
     return subprocess.Popen(  # start sub-process
         processCmd, env = envVar,
         stdout = subprocess.PIPE, stderr = subprocess.DEVNULL,
-        preexec_fn = lambda: ctypes.CDLL(libcPath).prctl(1, signal.SIGTERM)
+        preexec_fn = lambda: ctypes.CDLL(libcPath).prctl(1, signal.SIGTERM)  # avoid zombie process
     )
 
 
@@ -43,7 +43,7 @@ def getVariance(arrange: list, avg: float or None = None) -> float:
     variance = 0
     for num in arrange:
         variance += (num - avg) ** 2
-    return variance / (len(arrange) - 1)
+    return variance / len(arrange)
 
 
 def getCV(arrange: list, avg: float or None = None, variance: float or None = None) -> float:
@@ -55,15 +55,18 @@ def getCV(arrange: list, avg: float or None = None, variance: float or None = No
     return variance ** 0.5 / avg  # calculate the coefficient of variation
 
 
-def getArrangeInfo(arrange: list, isVariance: bool = False) -> dict:
+def getArrangeInfo(arrange: list, isCV: bool = False) -> dict:
+    arrange = [float(x) for x in arrange]  # change into float list
     avg = getAverage(arrange)
     variance = getVariance(arrange, avg)
     info = {
         'avg': format(avg, '.3f'),
-        'cv': format(getCV(arrange, avg, variance), '.3f')
+        'min': format(min(arrange), '.3f'),
+        'max': format(max(arrange), '.3f'),
+        'sd': format(variance ** 0.5, '.3f'),
     }
-    if isVariance:
-        info['var'] = format(variance, '.3f')
+    if isCV:
+        info['cv'] = format(getCV(arrange, avg, variance), '.3f')
     return info
 
 
@@ -96,7 +99,7 @@ def dnsResolve(domain: str, v6First: bool = False) -> list:
 def isIPv4(ipAddr: str) -> bool:
     try:
         if '/' in ipAddr: return False
-        return IPy.IP(ipAddr).version() == 4
+        return IPy.IP(ipAddr).version() == 4  # IPv4 address
     except:
         pass
     return False
@@ -105,7 +108,7 @@ def isIPv4(ipAddr: str) -> bool:
 def isIPv6(ipAddr: str) -> bool:
     try:
         if '/' in ipAddr: return False
-        return IPy.IP(ipAddr).version() == 6
+        return IPy.IP(ipAddr).version() == 6  # IPv6 address
     except:
         pass
     return False
@@ -117,7 +120,7 @@ def ipFormat(ipAddr: str) -> str:
 
 def address2IP(server: str, v6First: bool or None) -> str:
     if isIPv4(server):
-        return server  # IPv4 server
+        return ipFormat(server)  # IPv4 server
     elif isIPv6(server):
         return '[' + ipFormat(server) + ']'  # IPv6 server
     else:

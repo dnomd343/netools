@@ -32,22 +32,21 @@ def tlsping(server: str, port: int, host: str or None, v6First: bool or None, co
     if count < 1 or count > 16:  # count between 1 ~ 16
         raise RuntimeError('`count` value out of range')
 
-    result = {
-        'ip': server,
-        'port': port,
-        'host': host,
-        'times': count
-    }
     rawOutput = tlspingProcess(server, port, host, count)
     try:
         output = json.loads(rawOutput)
     except:
-        return {**result, 'alive': False}
+        return {'ip': server, 'port': port, 'host': host, 'alive': False}
     return {
-        **result,
-        'count': output['count'],
-        'avg': format(output['average'], '.3f'),
-        'min': format(output['min'], '.3f'),
-        'max': format(output['max'], '.3f'),
-        'stddev': format(output['stddev'], '.3f')
+        'ip': server,  # actual address
+        'port': port,
+        'host': host,
+        'alive': True,
+        'statistics': {
+            'count': int(output['count']),
+            'avg': format(float(output['average']) * 1000, '.3f'),
+            'min': format(float(output['min']) * 1000, '.3f'),
+            'max': format(float(output['max']) * 1000, '.3f'),
+            'sd': format(float(output['stddev']) * 1000, '.3f')
+        }
     }

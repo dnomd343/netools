@@ -46,15 +46,19 @@ def tcping(server: str, port: int, v6First: bool or None, count: int or None, ti
             time = float(time[:-2]) / 1000
         elif time.endswith('s'):
             time = float(time[:-1]) * 1000
-        else:  # others, skip it
+        else:  # skip others time format
             continue
         tcpingResult.append(time)
     if len(tcpingResult) == 0:
-        return {'ip': server, 'times': 0, 'count': count}
+        return {'ip': server, 'port': port, 'alive': False}
     return {
         'ip': server,  # actual address
-        'times': len(tcpingResult),  # number of successful tcpings
-        'count': count,  # tried numbers
-        **basis.getArrangeInfo(tcpingResult),
-        'value': [format(x, '.3f') for x in tcpingResult]
+        'port': port,
+        'alive': True,
+        'statistics': {
+            'count': count,  # number of transmit tcpings
+            'reply': len(tcpingResult),  # number of successful tcpings
+            'rate': format(len(tcpingResult) / count * 100, '.1f') + '%',  # success rate
+            **basis.getArrangeInfo(tcpingResult)
+        }
     }
