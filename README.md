@@ -15,11 +15,13 @@
 
 <details>
 
-<summary><b>Response example</b></summary>
+<summary><b>Response Example</b></summary>
+
+<br/>
 
 The target server is normal
 
-```
+```json
 {
   "success": true,
   "ip": "220.181.38.148",
@@ -39,7 +41,7 @@ The target server is normal
 
 The target server is offline
 
-```
+```json
 {
   "success": true,
   "ip": "255.255.255.255",
@@ -49,7 +51,7 @@ The target server is offline
 
 Invalid request or error in netools service
 
-```
+```json
 {
   "success": false,
   "message": "..."
@@ -70,11 +72,13 @@ Invalid request or error in netools service
 
 <details>
 
-<summary><b>Response example</b></summary>
+<summary><b>Response Example</b></summary>
+
+<br/>
 
 The tcp port of target server is open
 
-```
+```json
 {
   "success": true,
   "ip": "8.210.148.24",
@@ -94,7 +98,7 @@ The tcp port of target server is open
 
 The target server is offline or the port is not open
 
-```
+```json
 {
   "success": true,
   "ip": "8.210.148.24",
@@ -105,7 +109,7 @@ The target server is offline or the port is not open
 
 Invalid request or error in netools service
 
-```
+```json
 {
   "success": false,
   "message": "..."
@@ -127,11 +131,13 @@ Invalid request or error in netools service
 
 <details>
 
-<summary><b>Response example</b></summary>
+<summary><b>Response Example</b></summary>
+
+<br/>
 
 The TLS connection of target server and port is normal
 
-```
+```json
 {
   "success": true,
   "ip": "8.210.148.24",
@@ -150,7 +156,7 @@ The TLS connection of target server and port is normal
 
 Failed to establish TLS connection
 
-```
+```json
 {
   "success": true,
   "ip": "8.210.148.24",
@@ -162,7 +168,7 @@ Failed to establish TLS connection
 
 Invalid request or error in netools service
 
-```
+```json
 {
   "success": false,
   "message": "..."
