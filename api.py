@@ -8,10 +8,14 @@ from tools import *
 from gevent import pywsgi
 from flask import Flask, Response, request
 
+token = ''
 apiPath = '/'
 apiPort = 5633
 isDebug = False
+version = 'dev'
 
+if 'token' in os.environ:
+    token = os.environ['token']
 if 'path' in os.environ:
     apiPath = os.environ['path']
 if 'port' in os.environ:
@@ -43,6 +47,22 @@ def httpArgument(args: list) -> dict:
         elif request.method == 'POST':
             result[arg] = httpPostArg(arg)
     return result
+
+
+def tokenCheck() -> bool:
+    if token == '':  # token no need
+        return True
+    clientToken = httpArgument(['token'])['token']
+    if clientToken is None or clientToken != token:  # invalid token
+        return False
+    return True
+
+
+def tokenError() -> Response:
+    return responseJson({
+        'success': False,
+        'message': 'invalid token'
+    })
 
 
 def responseJson(data: dict) -> Response:
@@ -90,6 +110,8 @@ def toBool(raw) -> bool or None:  # change to bool
 
 @api.route(apiPath + '/ping', methods = ['GET', 'POST'])
 def pingMethod() -> Response:
+    if not tokenCheck():
+        return tokenError()
     args = httpArgument(['server', 'v6First', 'count', 'fast', 'size', 'timeout'])
     try:
         return responseJson({
@@ -106,6 +128,8 @@ def pingMethod() -> Response:
 
 @api.route(apiPath + '/tcping', methods = ['GET', 'POST'])
 def tcpingMethod() -> Response:
+    if not tokenCheck():
+        return tokenError()
     args = httpArgument(['server', 'port', 'v6First', 'count', 'timeout'])
     try:
         return responseJson({
@@ -121,6 +145,8 @@ def tcpingMethod() -> Response:
 
 @api.route(apiPath + '/tlsping', methods = ['GET', 'POST'])
 def tlspingMethod() -> Response:
+    if not tokenCheck():
+        return tokenError()
     args = httpArgument(['server', 'port', 'host', 'verify', 'v6First', 'count'])
     try:
         return responseJson({
@@ -135,7 +161,18 @@ def tlspingMethod() -> Response:
         })
 
 
-print('netools start at port ' + str(apiPort))
+@api.route(apiPath + '/version', methods = ['GET'])
+def getVersion() -> Response:
+    return responseJson({
+        'version': version
+    })
+
+
+print('netools (' + version + ') -> port ' + str(apiPort))
+if token == '':
+    print('TOKEN disabled')
+else:
+    print('TOKEN -> ' + token)
 if isDebug:
     print('DEBUG mode enabled')
     api.run(host = '0.0.0.0', port = apiPort, debug = True, threaded = True)
