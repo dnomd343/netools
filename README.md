@@ -1,6 +1,6 @@
 # netools
 
-An online network testing toolset.
+> An online network testing toolset.
 
 ## Ping
 
@@ -13,38 +13,50 @@ An online network testing toolset.
 |  size   |  `YES`   | `int`  |  `56`   |      Data bytes in packets, range `4 - 1016`       |
 | timeout |  `YES`   | `int`  |  `20`   |    Time limit for all requests, range `1 - 60`     |
 
+<details>
 
-Example of response:
+<summary><b>Response example</b></summary>
+
+The target server is normal
 
 ```
 {
+  "success": true,
   "ip": "220.181.38.148",
   "alive": true,
-  "ttl": 38,
-  "times": 16,
-  "count": 16,
-  "avg": "77.885",
-  "cv": "0.105",
-  "value": [
-    "81.997",
-    "120.573",
-    "61.290",
-    "78.400",
-    "78.623",
-    "66.632",
-    "77.715",
-    "79.042",
-    "88.348",
-    "70.319",
-    "74.119",
-    "92.237",
-    "75.648",
-    "98.559",
-    "83.566",
-    "82.458"
-  ]
+  "ttl": 49,
+  "statistics": {
+    "count": 16,
+    "reply": 16,
+    "rate": "100.0%",
+    "avg": "38.345",
+    "min": "38.281",
+    "max": "38.417",
+    "sd": "0.029"
+  }
 }
 ```
+
+The target server is offline
+
+```
+{
+  "success": true,
+  "ip": "255.255.255.255",
+  "alive": false
+}
+```
+
+Invalid request or error in netools service
+
+```
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+</details>
 
 ## TCPing
 
@@ -56,25 +68,53 @@ Example of response:
 |  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tried, range `1 - 16` |
 | timeout |  `YES`   | `int`  |   `3`   |   Time limit for each connection, range `1 - 10`   |
 
-Example of response:
+<details>
+
+<summary><b>Response example</b></summary>
+
+The tcp port of target server is open
 
 ```
 {
+  "success": true,
   "ip": "8.210.148.24",
-  "times": 4,
-  "count": 4,
-  "avg": "61.086",
-  "cv": "0.148",
-  "value": [
-    "73.433",
-    "61.607",
-    "56.976",
-    "52.327"
-  ]
+  "port": 80,
+  "alive": true,
+  "statistics": {
+    "count": 4,
+    "reply": 4,
+    "rate": "100.0%",
+    "avg": "3.208",
+    "min": "2.597",
+    "max": "3.462",
+    "sd": "0.358"
+  }
 }
 ```
 
-## TlsPing
+The target server is offline or the port is not open
+
+```
+{
+  "success": true,
+  "ip": "8.210.148.24",
+  "port": 8888,
+  "alive": false
+}
+```
+
+Invalid request or error in netools service
+
+```
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+</details>
+
+## TLSPing
 
 |  Field  | Optional |  Type  | Default |                      Describe                      |
 |:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
@@ -85,31 +125,61 @@ Example of response:
 | verify  |  `YES`   | `bool` | `true`  |    Make sure TLS is not subject to MITM attacks    |
 |  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tried, range `1 - 16` |
 
-Example of response:
+<details>
+
+<summary><b>Response example</b></summary>
+
+The TLS connection of target server and port is normal
 
 ```
 {
+  "success": true,
   "ip": "8.210.148.24",
   "port": 443,
-  "host": "ip.343.re"
-  "times": 4,
-  "count": 4,
-  "avg": "73.425",
-  "min": "69.817",
-  "max": "78.225",
-  "stddev": "3.708"
+  "host": "ip.343.re",
+  "alive": true,
+  "statistics": {
+    "count": 4,
+    "avg": "51.763",
+    "min": "36.902",
+    "max": "66.559",
+    "sd": "11.043"
+  }
 }
 ```
+
+Failed to establish TLS connection
+
+```
+{
+  "success": true,
+  "ip": "8.210.148.24",
+  "port": 443,
+  "host": "dns.343.re",
+  "alive": false
+}
+```
+
+Invalid request or error in netools service
+
+```
+{
+  "success": false,
+  "message": "..."
+}
+```
+
+</details>
 
 ## HTTPing
 
 WIP...
 
-## DIG
+## Dig
 
 WIP...
 
-## DNSLookUp
+## DnsLookUp
 
 WIP...
 
@@ -117,7 +187,7 @@ WIP...
 
 WIP...
 
-## TRACE
+## Trace
 
 WIP...
 
