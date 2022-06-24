@@ -121,12 +121,12 @@ def tcpingMethod() -> Response:
 
 @api.route(apiPath + '/tlsping', methods = ['GET', 'POST'])
 def tlspingMethod() -> Response:
-    args = httpArgument(['server', 'port', 'host', 'v6First', 'count'])
+    args = httpArgument(['server', 'port', 'host', 'verify', 'v6First', 'count'])
     try:
         return responseJson({
             'success': True,
             **tlsping.tlsping(args['server'], toInt(args['port']), args['host'],
-                              toBool(args['v6First']), toInt(args['count']))
+                              toBool(args['v6First']), toBool(args['verify']), toInt(args['count']))
         })
     except Exception as exp:
         return responseJson({

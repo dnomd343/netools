@@ -82,7 +82,8 @@ Example of response:
 |  port   |   `NO`   | `str`  |         |     TCP port for connection, range `1 - 65535`     |
 |  host   |  `YES`   | `str`  | server  |          SNI parameter in TLS connection           |
 | v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
-|  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tryed, range `1 - 16` |
+| verify  |  `YES`   | `bool` | `true`  |    Make sure TLS is not subject to MITM attacks    |
+|  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tried, range `1 - 16` |
 
 Example of response:
 

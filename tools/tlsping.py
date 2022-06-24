@@ -5,15 +5,18 @@ import json
 from tools import basis
 
 
-def tlspingProcess(server: str, port: int, host: str, count: int) -> str:
+def tlspingProcess(server: str, port: int, host: str, verify: bool, count: int) -> str:
     tlspingCmd = ['tlsping', '-json', '-c', str(count)] + \
-                 ([] if host == '' else ['-host', host]) + [server + ":" + str(port)]
+                 ([] if host == '' else ['-host', host]) + \
+                 ([] if verify else ['-insecure']) + \
+                 [server + ":" + str(port)]
     process = basis.startProcess(tlspingCmd)
     process.wait()
     return process.stdout.read().decode()
 
 
-def tlsping(server: str, port: int, host: str or None, v6First: bool or None, count: int or None) -> dict:
+def tlsping(server: str, port: int, host: str or None, v6First: bool or None,
+            verify: bool or None, count: int or None) -> dict:
     if server is None:
         raise RuntimeError('`server` cannot be None')
     if host is None: host = ''
@@ -26,13 +29,17 @@ def tlsping(server: str, port: int, host: str or None, v6First: bool or None, co
     if port < 1 or port > 65535:  # port between 1 ~ 65535
         raise RuntimeError('`port` value out of range')
 
+    if verify is None: verify = True  # default verify the x509 certificate
+    if type(verify) != bool:
+        raise RuntimeError('invalid `verify` value')
+
     if count is None: count = 4  # default times of ping
     if type(count) != int:
         raise RuntimeError('invalid `count` value')
     if count < 1 or count > 16:  # count between 1 ~ 16
         raise RuntimeError('`count` value out of range')
 
-    rawOutput = tlspingProcess(server, port, host, count)
+    rawOutput = tlspingProcess(server, port, host, verify, count)
     try:
         output = json.loads(rawOutput)
     except:
