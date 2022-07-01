@@ -4,3 +4,4 @@
 from tools import ping
 from tools import tcping
 from tools import tlsping
+from tools import mtr

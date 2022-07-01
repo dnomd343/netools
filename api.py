@@ -161,6 +161,23 @@ def tlspingMethod() -> Response:
         })
 
 
+@api.route(apiPath + '/mtr', methods = ['GET', 'POST'])
+def mtrMethod() -> Response:
+    if not tokenCheck():
+        return tokenError()
+    args = httpArgument(['server', 'v6First'])
+    try:
+        return responseJson({
+            'success': True,
+            **mtr.mtr(args['server'], toBool(args['v6First']))
+        })
+    except Exception as exp:
+        return responseJson({
+            'success': False,
+            'message': str(exp)
+        })
+
+
 @api.route(apiPath + '/version', methods = ['GET'])
 def getVersion() -> Response:
     return responseJson({
