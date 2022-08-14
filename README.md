@@ -181,14 +181,6 @@ Invalid request or error in netools service
 
 WIP...
 
-## Dig
-
-WIP...
-
-## DnsLookUp
-
-WIP...
-
 ## MTR
 
 |  Field  | Optional |  Type  | Default |                      Describe                      |
@@ -499,7 +491,11 @@ Invalid request or error in netools service
 
 </details>
 
-## Trace
+## Dig
+
+WIP...
+
+## DnsLookUp
 
 WIP...
 
