@@ -6,6 +6,7 @@ FROM ${PYTHON} AS wheels
 WORKDIR /wheels/
 RUN pip3 wheel dnspython flask gevent IPy
 RUN ls *.whl | xargs -n1 unzip -d ./site-packages/ && rm *.whl && rm -rf $(find ./ -name '__pycache__')
+RUN cd /usr/local/lib/python*/ && mkdir -p /packages/$(basename ${PWD})/ && mv /wheels/* /packages/python*/
 
 FROM ${GOLANG} AS tcping
 RUN apk add git
@@ -43,7 +44,7 @@ RUN case "$(uname -m)" in \
 RUN chmod +x /tmp/besttrace
 
 FROM ${ALPINE} AS build
-COPY --from=wheels /wheels/ /asset/usr/local/lib/python3.10/
+COPY --from=wheels /packages/ /asset/usr/local/lib/
 COPY --from=best-trace /tmp/besttrace /asset/usr/bin/
 COPY --from=dnslookup /tmp/dnslookup /asset/usr/bin/
 COPY --from=tlsping /tmp/tlsping /asset/usr/bin/
