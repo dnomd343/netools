@@ -4,6 +4,7 @@ ARG PYTHON="python:3.10-alpine3.16"
 
 FROM ${PYTHON} AS wheels
 WORKDIR /wheels/
+RUN apk add build-base libffi-dev
 RUN pip3 wheel dnspython flask gevent IPy
 RUN ls *.whl | xargs -n1 unzip -d ./site-packages/ && rm *.whl && rm -rf $(find ./ -name '__pycache__')
 RUN cd /usr/local/lib/python*/ && mkdir -p /packages/$(basename ${PWD})/ && mv /wheels/* /packages/python*/
