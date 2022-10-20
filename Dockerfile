@@ -38,14 +38,17 @@ COPY --from=tlsping /tmp/tlsping /release/
 COPY --from=dnslookup /tmp/dnslookup /release/
 COPY --from=best-trace /tmp/besttrace /release/
 
-# TODO: python3 wheels build
-# TODO: docker entrypoint with single exec-file
+FROM ${PYTHON} AS wheels
+WORKDIR /wheels/
+RUN pip3 wheel dnspython flask gevent IPy
+RUN ls *.whl | xargs -n1 unzip && rm *.whl && rm -rf $(find ./ -name '__pycache__')
 
 FROM ${PYTHON}
+RUN apk add --no-cache bind-tools mtr
+COPY --from=wheels /wheels/ /usr/local/lib/python3.10/site-packages/
+COPY --from=build /release/ /usr/bin/
 WORKDIR /netools/
 COPY ./ /netools/
-COPY --from=build /release/ /usr/bin/
-RUN pip3 install dnspython flask gevent IPy
 EXPOSE 5633
+# TODO: docker entrypoint with single exec-file
 CMD ["python3", "api.py"]
-RUN apk add --no-cache bind-tools mtr
