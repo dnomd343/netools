@@ -29,8 +29,13 @@ RUN env CGO_ENABLED=0 go build -v -trimpath -ldflags "-X main.VersionString=v${D
 RUN mv dnslookup /tmp/
 
 FROM ${ALPINE} AS best-trace
-COPY best-trace.sh /
-RUN sh best-trace.sh
+RUN wget https://cdn.ipip.net/17mon/besttrace4linux.zip && unzip besttrace4linux.zip
+RUN case "$(uname -m)" in \
+      'i386' | 'i686' | 'amd64' | 'x86_64') mv besttrace32 /tmp/besttrace;; \
+      'armv7' | 'armv7l' | 'armv8' | 'aarch64') mv besttracearm /tmp/besttrace;; \
+      *) echo "Architecture not supported" && exit 1;; \
+    esac
+RUN chmod +x /tmp/besttrace
 
 FROM ${ALPINE} AS build
 COPY --from=tcping /tmp/tcping /release/
