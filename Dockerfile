@@ -50,10 +50,9 @@ RUN ls *.whl | xargs -n1 unzip && rm *.whl && rm -rf $(find ./ -name '__pycache_
 
 FROM ${PYTHON}
 RUN apk add --no-cache bind-tools mtr
+RUN ln -s /netools/netools.py /usr/bin/netools
 COPY --from=wheels /wheels/ /usr/local/lib/python3.10/site-packages/
 COPY --from=build /release/ /usr/bin/
-WORKDIR /netools/
 COPY ./ /netools/
 EXPOSE 5633
-# TODO: docker entrypoint with single exec-file
-CMD ["python3", "api.py"]
+ENTRYPOINT ["netools"]
