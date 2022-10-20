@@ -2,9 +2,6 @@ ARG ALPINE="alpine:3.16"
 ARG GOLANG="golang:1.18-alpine3.16"
 ARG PYTHON="python:3.10-alpine3.16"
 
-# TODO: python3 wheels build
-# TODO: docker entrypoint with single exec-file
-
 FROM ${GOLANG} AS tcping
 RUN apk add git
 RUN git clone https://github.com/cloverstd/tcping.git
@@ -32,13 +29,22 @@ RUN env CGO_ENABLED=0 go build -v -trimpath -ldflags "-X main.VersionString=v${D
 RUN mv dnslookup /tmp/
 
 FROM ${ALPINE} AS best-trace
-COPY besttrace.sh /
-RUN sh besttrace.sh
+COPY best-trace.sh /
+RUN sh best-trace.sh
+
+FROM ${ALPINE} AS build
+COPY --from=tcping /tmp/tcping /release/
+COPY --from=tlsping /tmp/tlsping /release/
+COPY --from=dnslookup /tmp/dnslookup /release/
+COPY --from=best-trace /tmp/besttrace /release/
+
+# TODO: python3 wheels build
+# TODO: docker entrypoint with single exec-file
 
 FROM ${PYTHON}
-WORKDIR /netools
-COPY . /netools
-COPY --from=build /tmp /usr/bin
+WORKDIR /netools/
+COPY ./ /netools/
+COPY --from=build /release/ /usr/bin/
 RUN pip3 install dnspython flask gevent IPy
 EXPOSE 5633
 CMD ["python3", "api.py"]
