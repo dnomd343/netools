@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from utils import logger
+from utils import checker
 
 class Ping:
     """Netools ping module
@@ -14,7 +15,7 @@ class Ping:
         size: Data bytes in packets. (4 ~ 1016)
         timeout: Time limit for all requests. (1 ~ 60)
     """
-    def __valueInit(self) -> None:  # default value
+    def __valueInit(self) -> None:  # load default value
         self.server = ''
         self.v6First = False
         self.count = 16
@@ -49,6 +50,18 @@ class Ping:
             raise RuntimeError('`timeout` type error')
         if self.timeout < 1 or self.timeout > 60:  # timeout between 1 ~ 60
             raise RuntimeError('`timeout` out of range')
+
+        limit = dict(v6First = {
+            'type': bool,
+            'check': lambda x: True
+        }, count = {
+            'type': int,
+            'check': lambda x: 1 <= x <= 64
+        }, fast = {
+            'type': bool,
+            'check': lambda x: True
+        })
+        checker(limit, self.v6First, self.count, self.fast)
 
     def __init__(self, server: str) -> None:
         self.__valueInit()
