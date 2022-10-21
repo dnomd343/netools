@@ -3,6 +3,8 @@
 
 from utils import logger
 from utils import checker
+from utils import isHost
+
 
 class Ping:
     """Netools ping module
@@ -15,8 +17,16 @@ class Ping:
         size: Data bytes in packets. (4 ~ 1016)
         timeout: Time limit for all requests. (1 ~ 60)
     """
+    rules = [
+        ('server', str, isHost),
+        ('v6First', bool, None),
+        ('count', int, lambda x: 1 <= x <= 64),
+        ('fast', bool, None),
+        ('size', int, lambda x: 4 <= x <= 1016),
+        ('timeout', int, lambda x: 1 <= x <= 60),
+    ]
+
     def __valueInit(self) -> None:  # load default value
-        self.server = ''
         self.v6First = False
         self.count = 16
         self.fast = True
@@ -24,49 +34,26 @@ class Ping:
         self.timeout = 20
 
     def __valueCheck(self) -> None:
-        # TODO: server option check
+        checker('Ping', self.rules,
+            self.server, self.v6First, self.count, self.fast, self.size, self.timeout
+        )
 
-        if type(self.v6First) != bool:
-            logger.warning('Ping option `v6First` must be bool type')
-            raise RuntimeError('`v6First` type error')
-
-        if type(self.count) != int:
-            logger.warning('Ping option `count` must be int type')
-            raise RuntimeError('`count` type error')
-        if self.count < 1 or self.count > 64:  # count between 1 ~ 64
-            raise RuntimeError('`count` out of range')
-
-        if type(self.fast) != bool:
-            logger.warning('Ping option `fast` must be bool type')
-            raise RuntimeError('`fast` type error')
-
-        if type(self.size) != int:
-            logger.warning('Ping option `size` must be int type')
-            raise RuntimeError('`size` type error')
-        if self.size < 4 or self.size > 1016:  # size between 4 ~ 1016
-            raise RuntimeError('`size` out of range')
-
-        if type(self.timeout) != int:
-            raise RuntimeError('`timeout` type error')
-        if self.timeout < 1 or self.timeout > 60:  # timeout between 1 ~ 60
-            raise RuntimeError('`timeout` out of range')
-
-        limit = dict(v6First = {
-            'type': bool,
-            'check': lambda x: True
-        }, count = {
-            'type': int,
-            'check': lambda x: 1 <= x <= 64
-        }, fast = {
-            'type': bool,
-            'check': lambda x: True
-        })
-        checker(limit, self.v6First, self.count, self.fast)
+    def __valueDump(self) -> None:
+        logger.debug('[%s] Ping server -> %s' % (self.id, self.server))
+        logger.debug('[%s] Ping v6First -> %s' % (self.id, self.v6First))
+        logger.debug('[%s] Ping count -> %d' % (self.id, self.count))
+        logger.debug('[%s] Ping fast -> %s' % (self.id, self.fast))
+        logger.debug('[%s] Ping size -> %d' % (self.id, self.size))
+        logger.debug('[%s] Ping timeout -> %d' % (self.id, self.timeout))
 
     def __init__(self, server: str) -> None:
+        # TODO: generate task ID
+        self.id = '233333'
         self.__valueInit()
         self.server = server
 
     def run(self):
         self.__valueCheck()
+        self.__valueDump()
+        # TODO: server -> ip address
         # TODO: ping process
