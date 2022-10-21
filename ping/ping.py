@@ -3,8 +3,9 @@
 
 from utils import logger
 from utils import checker
-from utils import isHost
 
+from utils import isHost
+from utils import runProcess
 
 class Ping:
     """Netools ping module
@@ -46,6 +47,19 @@ class Ping:
         logger.debug('[%s] Ping size -> %d' % (self.id, self.size))
         logger.debug('[%s] Ping timeout -> %d' % (self.id, self.timeout))
 
+    def __runPing(self) -> str:  # ping command raw output
+        pingCmd = [
+            'ping', self.server,
+            '-c', str(self.count),
+            '-s', str(self.size),
+            '-w', str(self.timeout),
+        ]
+        if self.fast:  # enabled fast mode
+            pingCmd.append('-A')
+        process = runProcess(pingCmd)
+        process.wait()  # wait ping process exit
+        return process.stdout.read().decode()
+
     def __init__(self, server: str) -> None:
         # TODO: generate task ID
         self.id = '233333'
@@ -55,5 +69,9 @@ class Ping:
     def run(self):
         self.__valueCheck()
         self.__valueDump()
+
+        raw = self.__runPing()
+
+        print(raw)
         # TODO: server -> ip address
         # TODO: ping process
