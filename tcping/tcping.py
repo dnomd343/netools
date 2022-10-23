@@ -14,7 +14,7 @@ class Tcping:
     """Netools tcping module
 
     Attributes:
-        server: Ping package target. (ipv4 / ipv6 / domain)
+        server: TCPing package target. (ipv4 / ipv6 / domain)
         port: TCP port for connection. (1 ~ 65535)
         v6First: IPv6 is preferred. (server -> domain name)
         count: The number of tcp connection tried. (1 ~ 16)
@@ -28,7 +28,7 @@ class Tcping:
         ('timeout', int, lambda x: 1 <= x <= 10),
     ]
 
-    def __valueInit(self) -> None:
+    def __valueInit(self) -> None:  # load default values
         self.v6First = False
         self.count = 4
         self.timeout = 3
