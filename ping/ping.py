@@ -90,8 +90,8 @@ class Ping:
             'alive': True,  # server online
             'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
             'statistics': {
-                'count': int(sendTimes),  # number of transmit pings
-                'reply': len(result),  # number of successful pings
+                'count': int(sendTimes),  # number of transmit ping
+                'reply': len(result),  # number of successful ping
                 # TODO: remove success rate
                 # TODO: add statistic
                 # TODO: return raw result
@@ -108,6 +108,7 @@ class Ping:
 
     def run(self) -> dict:
         self.__valueCheck()
+        # TODO: add request params
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] Ping task -> %s' % (self.id, self.server))
         self.__valueDump()

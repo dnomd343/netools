@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
+import re
 from utils import logger
 from utils import checker
 from utils import genFlag
@@ -57,6 +58,41 @@ class Tcping:
         logger.debug('[%s] TCPing raw output ->\n%s' % (self.id, output))
         return output
 
+    def __analyse(self, raw: str) -> dict:  # analyse tcping output
+        result = []
+        for row in raw.split('\n'):
+            if row.strip() == '':  # test complete
+                break
+            if 'connected' not in row:  # connect failed
+                continue
+            tcpingTime = re.search(r'time=(\S+)', row)[1]
+            if tcpingTime.endswith('ms'):
+                tcpingTime = float(tcpingTime[:-2])
+            elif tcpingTime.endswith('µs'):
+                tcpingTime = float(tcpingTime[:-2]) / 1000
+            elif tcpingTime.endswith('s'):
+                tcpingTime = float(tcpingTime[:-1]) * 1000
+            else:  # skip others time format
+                continue
+            result.append(tcpingTime)
+        if len(result) == 0:
+            return {
+                'ip': self.server,  # actual address
+                'port': self.port,
+                'alive': False,  # server offline
+            }
+        return {
+            'ip': self.server,  # actual address
+            'port': self.port,
+            'alive': True,  # server online
+            'statistics': {
+                'count': self.count,  # number of transmit tcping
+                'reply': len(result),  # number of successful tcping
+        #         'rate': format(len(tcpingResult) / count * 100, '.1f') + '%',  # success rate
+        #         **basis.getArrangeInfo(tcpingResult)
+            }
+        }
+
     def __init__(self, server: str, port: int) -> None:
         self.id = genFlag()
         self.__valueInit()
@@ -69,10 +105,6 @@ class Tcping:
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] TCPing task -> %s(:%d)' % (self.id, self.server, self.port))
         self.__valueDump()
-
-        result = self.__runTcping()
-
-        # TODO: analyse tcping output
-
-        logger.info('[%s] Ping result -> %s' % (self.id, result))
+        result = self.__analyse(self.__runTcping())
+        logger.info('[%s] TCPing result -> %s' % (self.id, result))
         return result

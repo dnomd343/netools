@@ -31,6 +31,11 @@ else:
 
 def runProcess(processCmd: list, envVar: dict or None = None):  # start sub-process
     # TODO: show process info
+
+    # TODO: remove envVar default value
+
+    # TODO: check whether process running failed
+
     return subprocess.Popen(  # start sub-process
         processCmd,
         env = envVar,  # default with None
