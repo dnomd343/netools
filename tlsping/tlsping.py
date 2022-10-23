@@ -10,11 +10,11 @@ from utils import runProcess
 from utils import isPort, isHost
 
 
-class TlsPing:
+class TLSPing:
     """Netools tlsping module
 
     Attributes:
-        server: TlsPing package target. (ipv4 / ipv6 / domain)
+        server: TLSPing package target. (ipv4 / ipv6 / domain)
         port: TCP port for connection. (1 ~ 65535)
         host: SNI parameter in TLS connection. (using server in default)
         v6First: IPv6 is preferred. (server -> domain name)
@@ -37,17 +37,17 @@ class TlsPing:
         self.count = 4
 
     def __valueCheck(self) -> None:  # check parameter values
-        checker('TlsPing', self.rules,
+        checker('TLSPing', self.rules,
             self.server, self.port, self.host, self.v6First, self.verify, self.count
         )
 
     def __valueDump(self) -> None:  # output parameter values
-        logger.debug('[%s] TlsPing server -> %s' % (self.id, self.server))
-        logger.debug('[%s] TlsPing port -> %d' % (self.id, self.port))
-        logger.debug('[%s] TlsPing host -> %s' % (self.id, self.host))
-        logger.debug('[%s] TlsPing v6First -> %s' % (self.id, self.v6First))
-        logger.debug('[%s] TlsPing verify -> %s' % (self.id, self.verify))
-        logger.debug('[%s] TlsPing count -> %d' % (self.id, self.count))
+        logger.debug('[%s] TLSPing server -> %s' % (self.id, self.server))
+        logger.debug('[%s] TLSPing port -> %d' % (self.id, self.port))
+        logger.debug('[%s] TLSPing host -> %s' % (self.id, self.host))
+        logger.debug('[%s] TLSPing v6First -> %s' % (self.id, self.v6First))
+        logger.debug('[%s] TLSPing verify -> %s' % (self.id, self.verify))
+        logger.debug('[%s] TLSPing count -> %d' % (self.id, self.count))
 
     def __runTlsping(self) -> str:  # get raw output of tlsping command
         # TODO: show each result
@@ -61,7 +61,7 @@ class TlsPing:
         process = runProcess(self.id, tlspingCmd, None)
         process.wait()  # wait ping process exit
         output = process.stdout.read().decode()
-        logger.debug('[%s] TlsPing raw output ->\n%s' % (self.id, output))
+        logger.debug('[%s] TLSPing raw output ->\n%s' % (self.id, output))
         return output
 
     def __analyse(self, raw: str) -> dict:  # analyse tlsping output
@@ -94,7 +94,7 @@ class TlsPing:
         self.__valueInit()
         self.server = server  # load ping server
         self.port = port # load tcping port
-        logger.debug('[%s] TlsPing task init -> %s(:%d)' % (self.id, self.server, self.port))
+        logger.debug('[%s] TLSPing task init -> %s(:%d)' % (self.id, self.server, self.port))
 
     def run(self) -> dict:
         self.__valueCheck()
@@ -102,8 +102,8 @@ class TlsPing:
         if self.host == '':  # without host field
             self.host = self.server
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
-        logger.info('[%s] TlsPing task -> %s(:%d)%s' % (self.id, self.server, self.port, ''))
+        logger.info('[%s] TLSPing task -> %s(:%d)%s' % (self.id, self.server, self.port, ''))
         self.__valueDump()
         result = self.__analyse(self.__runTlsping())
-        logger.info('[%s] TlsPing result -> %s' % (self.id, result))
+        logger.info('[%s] TLSPing result -> %s' % (self.id, result))
         return result

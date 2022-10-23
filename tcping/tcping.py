@@ -10,7 +10,7 @@ from utils import runProcess
 from utils import isHost, isPort
 
 
-class Tcping:
+class TCPing:
     """Netools tcping module
 
     Attributes:
