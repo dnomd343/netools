@@ -108,7 +108,7 @@ class Ping:
     def run(self) -> dict:
         self.__valueCheck()
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
-        logger.info('[%s] Start running ping task' % self.id)
+        logger.info('[%s] Ping task -> %s' % (self.id, self.server))
         self.__valueDump()
         result = self.__analyse(self.__runPing())
         logger.info('[%s] Ping result -> %s' % (self.id, result))

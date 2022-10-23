@@ -7,6 +7,10 @@ from dns import resolver
 from utils import logger
 
 
+def isPort(port: int) -> bool:  # check port
+    return 1 <= port <= 65535
+
+
 def isIPv4(ipAddr: str) -> bool:  # check ipv4 address
     try:
         if '/' in ipAddr:  # exclude cidr input
