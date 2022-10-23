@@ -4,6 +4,7 @@
 import re
 from IPy import IP
 from dns import resolver
+from utils import logger
 
 
 def isIPv4(ipAddr: str) -> bool:  # check ipv4 address
@@ -58,10 +59,11 @@ def v6Resolve(domain: str) -> list:  # ipv6 dns resolve
 
 
 def dnsResolve(domain: str, v6First: bool = False) -> list:  # dns resolve
-    # TODO: add debug logger
-    if v6First:
-        return v6Resolve(domain) + v4Resolve(domain)  # ipv6 first
-    return v4Resolve(domain) + v6Resolve(domain)
+    v4Result = v4Resolve(domain)
+    v6Result = v6Resolve(domain)
+    dnsResult = (v6Result + v4Result) if v6First else (v4Result + v6Result)
+    logger.debug('DNS Resolve `%s` -> %s' % (domain, dnsResult))
+    return dnsResult
 
 
 def host2IP(host: str, v6First: bool) -> str:  # convert host to ip address
