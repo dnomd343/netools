@@ -12,4 +12,4 @@ from tlsping import TlsPing
 # p.run()
 
 p = TlsPing('8.210.148.24', 443)
-# p.run()
+p.run()

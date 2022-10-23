@@ -4,7 +4,10 @@
 from utils import logger
 from utils import checker
 from utils import genFlag
+from utils import host2IP
+from utils import runProcess
 from utils import isPort, isHost
+
 
 class TlsPing:
     """Netools tlsping module
@@ -45,6 +48,20 @@ class TlsPing:
         logger.debug('[%s] TlsPing verify -> %s' % (self.id, self.verify))
         logger.debug('[%s] TlsPing count -> %d' % (self.id, self.count))
 
+    def __runTlsping(self) -> str:  # get raw output of tlsping command
+        tlspingCmd = ['tlsping', '-json', '-c', str(self.count)]
+        if self.host != '':
+            tlspingCmd += ['-host', self.host]
+        if not self.verify:
+            tlspingCmd += ['-insecure']
+        tlspingCmd += ['%s:%d' % (self.server, self.port)]
+        logger.debug('[%s] TCPing command -> %s' % (self.id, tlspingCmd))
+        process = runProcess(self.id, tlspingCmd, None)
+        process.wait()  # wait ping process exit
+        output = process.stdout.read().decode()
+        logger.debug('[%s] TlsPing raw output ->\n%s' % (self.id, output))
+        return output
+
     def __init__(self, server: str, port: int) -> None:
         self.id = genFlag()
         self.__valueInit()
@@ -52,3 +69,19 @@ class TlsPing:
         self.port = port # load tcping port
         logger.debug('[%s] TlsPing task init -> %s(:%d)' % (self.id, self.server, self.port))
 
+    def run(self) -> dict:
+        self.__valueCheck()
+        # TODO: fix host specify
+        if self.host == '':  # without host field
+            self.host = self.server
+        self.server = host2IP(self.server, self.v6First)  # convert into ip address
+        logger.info('[%s] TlsPing task -> %s(:%d)%s' % (self.id, self.server, self.port, ''))
+        self.__valueDump()
+
+        self.__runTlsping()
+
+
+        # result = self.__analyse(self.__runTcping())
+        # logger.info('[%s] TlsPing result -> %s' % (self.id, result))
+        # return result
+        return {}
