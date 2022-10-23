@@ -105,7 +105,7 @@ class Ping:
         self.server = server  # load ping target
         logger.debug('[%s] Ping task init -> %s' % (self.id, self.server))
 
-    def run(self):
+    def run(self) -> dict:
         self.__valueCheck()
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] Start running ping task' % self.id)
