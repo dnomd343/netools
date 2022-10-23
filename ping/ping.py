@@ -58,6 +58,7 @@ class Ping:
         ]
         if self.fast:  # enabled fast mode
             pingCmd.append('-A')
+        # TODO: output ping command in debug log
         process = runProcess(pingCmd)
         process.wait()  # wait ping process exit
         output = process.stdout.read().decode()

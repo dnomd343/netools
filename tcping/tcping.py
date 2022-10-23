@@ -5,6 +5,7 @@ from utils import logger
 from utils import checker
 from utils import genFlag
 from utils import host2IP
+from utils import runProcess
 from utils import isHost, isPort
 
 
@@ -43,6 +44,19 @@ class Tcping:
         logger.debug('[%s] TCPing count -> %d' % (self.id, self.count))
         logger.debug('[%s] TCPing timeout -> %d' % (self.id, self.timeout))
 
+    def __runTcping(self) -> str:  # get raw output of tcping command
+        tcpingCmd = [
+            'tcping', self.server, str(self.port),
+            '--counter', str(self.count),
+            '--timeout', '%ds' % self.timeout
+        ]
+        logger.debug('[%s] TCPing command -> %s' % (self.id, tcpingCmd))
+        process = runProcess(tcpingCmd)
+        process.wait()  # wait ping process exit
+        output = process.stdout.read().decode()
+        logger.debug('[%s] TCPing raw output ->\n%s' % (self.id, output))
+        return output
+
     def __init__(self, server: str, port: int) -> None:
         self.id = genFlag()
         self.__valueInit()
@@ -56,6 +70,9 @@ class Tcping:
         logger.info('[%s] TCPing task -> %s(:%d)' % (self.id, self.server, self.port))
         self.__valueDump()
 
-        # TODO: running tcping and analyse result
+        result = self.__runTcping()
 
-        return {}
+        # TODO: analyse tcping output
+
+        logger.info('[%s] Ping result -> %s' % (self.id, result))
+        return result
