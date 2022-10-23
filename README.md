@@ -4,14 +4,14 @@
 
 ## Ping
 
-|  Field  | Optional |  Type  | Default |                      Describe                      |
-|:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
-| server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
-| v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
-|  count  |  `YES`   | `int`  |  `16`   |  The number of ping requests sent, range `1 - 64`  |
-|  fast   |  `YES`   | `bool` | `true`  |         Ping as soon as reply is received          |
-|  size   |  `YES`   | `int`  |  `56`   |      Data bytes in packets, range `4 - 1016`       |
-| timeout |  `YES`   | `int`  |  `20`   |    Time limit for all requests, range `1 - 60`     |
+|  Field  | Essential |  Type  | Default |   Range    |                 Describe                 |
+|:-------:|:---------:|:------:|:-------:|:----------:|:----------------------------------------:|
+| server  |   `YES`   | `str`  |         |            |   IPv4, IPv6 address or a domain name    |
+| v6First |   `NO`    | `bool` | `false` |            | IPv6 is preferred (only for domain name) |
+|  count  |   `NO`    | `int`  |  `16`   |  `1 - 64`  |     The number of ping requests sent     |
+|  fast   |   `NO`    | `bool` | `true`  |            |    Ping as soon as reply is received     |
+|  size   |   `NO`    | `int`  |  `56`   | `4 - 1016` |          Data bytes in packets           |
+| timeout |   `NO`    | `int`  |  `20`   |  `1 - 60`  |       Time limit for all requests        |
 
 <details>
 
@@ -62,13 +62,13 @@ Invalid request or error in netools service
 
 ## TCPing
 
-|  Field  | Optional |  Type  | Default |                      Describe                      |
-|:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
-| server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
-|  port   |   `NO`   | `str`  |         |     TCP port for connection, range `1 - 65535`     |
-| v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
-|  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tried, range `1 - 16` |
-| timeout |  `YES`   | `int`  |   `3`   |   Time limit for each connection, range `1 - 10`   |
+|  Field  | Essential |  Type  | Default |    Range    |                 Describe                 |
+|:-------:|:---------:|:------:|:-------:|:-----------:|:----------------------------------------:|
+| server  |   `YES`   | `str`  |         |             |   IPv4, IPv6 address or a domain name    |
+|  port   |   `YES`   | `str`  |         | `1 - 65535` |         TCP port for connection          |
+| v6First |   `NO`    | `bool` | `false` |             | IPv6 is preferred (only for domain name) |
+|  count  |   `NO`    | `int`  |   `4`   |  `1 - 16`   |    The number of tcp connection tried    |
+| timeout |   `NO`    | `int`  |   `3`   |  `1 - 10`   |      Time limit for each connection      |
 
 <details>
 
@@ -120,14 +120,14 @@ Invalid request or error in netools service
 
 ## TLSPing
 
-|  Field  | Optional |  Type  | Default |                      Describe                      |
-|:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
-| server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
-|  port   |   `NO`   | `str`  |         |     TCP port for connection, range `1 - 65535`     |
-|  host   |  `YES`   | `str`  | server  |          SNI parameter in TLS connection           |
-| v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
-| verify  |  `YES`   | `bool` | `true`  |    Make sure TLS is not subject to MITM attacks    |
-|  count  |  `YES`   | `int`  |   `4`   | The number of tcp connection tried, range `1 - 16` |
+|  Field  | Essential |  Type  | Default |    Range    |                   Describe                   |
+|:-------:|:---------:|:------:|:-------:|:-----------:|:--------------------------------------------:|
+| server  |   `YES`   | `str`  |         |             |     IPv4, IPv6 address or a domain name      |
+|  port   |   `YES`   | `str`  |         | `1 - 65535` |           TCP port for connection            |
+|  host   |   `NO`    | `str`  | server  |             |       SNI parameter in TLS connection        |
+| v6First |   `NO`    | `bool` | `false` |             |   IPv6 is preferred (only for domain name)   |
+| verify  |   `NO`    | `bool` | `true`  |             | Make sure TLS is not subject to MITM attacks |
+|  count  |   `NO`    | `int`  |   `4`   |  `1 - 16`   |      The number of tcp connection tried      |
 
 <details>
 
@@ -183,10 +183,10 @@ WIP...
 
 ## MTR
 
-|  Field  | Optional |  Type  | Default |                      Describe                      |
-|:-------:|:--------:|:------:|:-------:|:--------------------------------------------------:|
-| server  |   `NO`   | `str`  |         |        IPv4, IPv6 address or a domain name         |
-| v6First |  `YES`   | `bool` | `false` | IPv6 is preferred when the server is a domain name |
+|  Field  | Essential |  Type  | Default |                 Describe                 |
+|:-------:|:---------:|:------:|:-------:|:----------------------------------------:|
+| server  |   `YES`   | `str`  |         |   IPv4, IPv6 address or a domain name    |
+| v6First |   `NO`    | `bool` | `false` | IPv6 is preferred (only for domain name) |
 
 <details>
 
