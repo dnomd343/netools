@@ -29,17 +29,17 @@ else:
     logger.info('Dynamic link library `libc.so` located -> %s' % libcPath)
 
 
-def runProcess(processCmd: list, envVar: dict or None = None):  # start sub-process
-    # TODO: show process info
-
-    # TODO: remove envVar default value
-
-    # TODO: check whether process running failed
-
-    return subprocess.Popen(  # start sub-process
-        processCmd,
-        env = envVar,  # default with None
-        stdout = subprocess.PIPE,  # fetch stdout output
-        stderr = subprocess.DEVNULL,  # ignore stderr output
-        preexec_fn = lambda: ctypes.CDLL(libcPath).prctl(1, signal.SIGTERM)  # avoid zombie process
-    )
+def runProcess(taskFlag: str, command: list, envVar: dict or None):  # running sub-process
+    try:
+        process = subprocess.Popen(  # start sub-process
+            command,
+            env = envVar,  # default with None
+            stdout = subprocess.PIPE,  # fetch stdout output
+            stderr = subprocess.DEVNULL,  # ignore stderr output
+            preexec_fn = lambda: ctypes.CDLL(libcPath).prctl(1, signal.SIGTERM)  # avoid zombie process
+        )
+        logger.debug('[%s] Process `%s` start -> PID = %d' % (taskFlag, command[0], process.pid))
+        return process
+    except Exception as exp:
+        logger.error('Process %s -> %s' % (command, exp))
+        raise RuntimeError('Inner process error')

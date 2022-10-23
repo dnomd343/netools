@@ -52,7 +52,7 @@ class Tcping:
             '--timeout', '%ds' % self.timeout
         ]
         logger.debug('[%s] TCPing command -> %s' % (self.id, tcpingCmd))
-        process = runProcess(tcpingCmd)
+        process = runProcess(self.id, tcpingCmd, None)
         process.wait()  # wait ping process exit
         output = process.stdout.read().decode()
         logger.debug('[%s] TCPing raw output ->\n%s' % (self.id, output))
@@ -88,6 +88,7 @@ class Tcping:
             'statistics': {
                 'count': self.count,  # number of transmit tcping
                 'reply': len(result),  # number of successful tcping
+                # TODO: result analyse (rate / avg / cv ...)
         #         'rate': format(len(tcpingResult) / count * 100, '.1f') + '%',  # success rate
         #         **basis.getArrangeInfo(tcpingResult)
             }
