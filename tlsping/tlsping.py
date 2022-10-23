@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
+import json
 from utils import logger
 from utils import checker
 from utils import genFlag
@@ -49,6 +50,7 @@ class TlsPing:
         logger.debug('[%s] TlsPing count -> %d' % (self.id, self.count))
 
     def __runTlsping(self) -> str:  # get raw output of tlsping command
+        # TODO: show each result
         tlspingCmd = ['tlsping', '-json', '-c', str(self.count)]
         if self.host != '':
             tlspingCmd += ['-host', self.host]
@@ -61,6 +63,31 @@ class TlsPing:
         output = process.stdout.read().decode()
         logger.debug('[%s] TlsPing raw output ->\n%s' % (self.id, output))
         return output
+
+    def __analyse(self, raw: str) -> dict:  # analyse tlsping output
+        try:
+            output = json.loads(raw)
+        except:
+            return {
+                'ip': self.server,  # actual address
+                'port': self.port,
+                'host': self.host,
+                'alive': False,  # server offline
+            }
+        return {
+            'ip': self.server,  # actual address
+            'port': self.port,
+            'host': self.host,
+            'alive': True,  # server online
+            'statistics': {
+                'count': int(output['count']),
+                # TODO: analyse result
+                # 'avg': format(float(output['average']) * 1000, '.3f'),
+                # 'min': format(float(output['min']) * 1000, '.3f'),
+                # 'max': format(float(output['max']) * 1000, '.3f'),
+                # 'sd': format(float(output['stddev']) * 1000, '.3f')
+            }
+        }
 
     def __init__(self, server: str, port: int) -> None:
         self.id = genFlag()
@@ -77,11 +104,6 @@ class TlsPing:
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] TlsPing task -> %s(:%d)%s' % (self.id, self.server, self.port, ''))
         self.__valueDump()
-
-        self.__runTlsping()
-
-
-        # result = self.__analyse(self.__runTcping())
-        # logger.info('[%s] TlsPing result -> %s' % (self.id, result))
-        # return result
-        return {}
+        result = self.__analyse(self.__runTlsping())
+        logger.info('[%s] TlsPing result -> %s' % (self.id, result))
+        return result

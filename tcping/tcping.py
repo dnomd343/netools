@@ -46,6 +46,7 @@ class Tcping:
         logger.debug('[%s] TCPing timeout -> %d' % (self.id, self.timeout))
 
     def __runTcping(self) -> str:  # get raw output of tcping command
+        # TODO: tcping connection in parallel
         tcpingCmd = [
             'tcping', self.server, str(self.port),
             '--counter', str(self.count),
