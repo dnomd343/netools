@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-LogLevel = "debug"
-LogFile = "runtime.log"
+LogLevel = 'debug'
+LogFile = 'runtime.log'

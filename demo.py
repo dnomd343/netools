@@ -3,5 +3,5 @@
 
 from ping import Ping
 
-p = Ping('8.210.148.24')
+p = Ping('ip.343.re')
 p.run()
