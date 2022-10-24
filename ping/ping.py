@@ -3,10 +3,11 @@
 
 import re
 from utils import logger
+from utils import isHost
 from utils import checker
+from utils import host2IP
 from utils import genFlag
 from utils import runProcess
-from utils import isHost, host2IP
 
 
 class Ping:
@@ -28,13 +29,12 @@ class Ping:
         ('size', int, lambda x: 4 <= x <= 1016),
         ('timeout', int, lambda x: 1 <= x <= 60),
     ]
-
-    def __valueInit(self) -> None:  # load default values
-        self.v6First = False
-        self.count = 16
-        self.fast = True
-        self.size = 56
-        self.timeout = 20
+    server = None  # load default values
+    v6First = False
+    count = 16
+    fast = True
+    size = 56
+    timeout = 20
 
     def __valueCheck(self) -> None:  # check parameter values
         checker('Ping', self.rules,
@@ -58,7 +58,7 @@ class Ping:
         ]
         if self.fast:  # enabled fast mode
             pingCmd.append('-A')
-        # TODO: output ping command in debug log
+        logger.debug('[%s] Ping command -> %s' % (self.id, pingCmd))
         process = runProcess(self.id, pingCmd, None)
         process.wait()  # wait ping process exit
         output = process.stdout.read().decode()
@@ -89,29 +89,36 @@ class Ping:
             'ip': self.server,  # actual address
             'alive': True,  # server online
             'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
-            'statistics': {
+            'result': {
+                'raw': [float(x[1]) for x in result],  # raw latency result
                 'count': int(sendTimes),  # number of transmit ping
                 'reply': len(result),  # number of successful ping
-                # TODO: remove success rate
-                # TODO: add statistic
-                # TODO: return raw result
-            #     'rate': format(len(pingResult) / int(sendTimes) * 100, '.1f') + '%',  # success rate
-            #     **basis.getArrangeInfo(pingResult)
+                'rate': '%s%%' % format(len(result) / int(sendTimes) * 100, '.1f'),  # success rate
+                # TODO: add result statistic -> avg / cv ...
             }
         }
 
     def __init__(self, server: str) -> None:
         self.id = genFlag()
-        self.__valueInit()
         self.server = server  # load ping target
         logger.debug('[%s] Ping task init -> %s' % (self.id, self.server))
 
     def run(self) -> dict:
         self.__valueCheck()
-        # TODO: add request params
+        request = {
+            'server': self.server,
+            'v6First': self.v6First,
+            'count': self.count,
+            'fast': self.fast,
+            'size': self.size,
+            'timeout': self.timeout,
+        }
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] Ping task -> %s' % (self.id, self.server))
         self.__valueDump()
-        result = self.__analyse(self.__runPing())
+        result = {
+            'request': request,
+            **self.__analyse(self.__runPing()),
+        }
         logger.info('[%s] Ping result -> %s' % (self.id, result))
         return result
