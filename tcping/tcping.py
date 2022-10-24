@@ -3,11 +3,12 @@
 
 import re
 from utils import logger
+from utils import isHost
+from utils import isPort
+from utils import host2IP
 from utils import checker
 from utils import genFlag
-from utils import host2IP
 from utils import runProcess
-from utils import isHost, isPort
 
 
 class TCPing:

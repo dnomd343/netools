@@ -3,11 +3,12 @@
 
 import json
 from utils import logger
+from utils import isHost
+from utils import isPort
 from utils import checker
-from utils import genFlag
 from utils import host2IP
+from utils import genFlag
 from utils import runProcess
-from utils import isPort, isHost
 
 
 class TLSPing:
@@ -29,12 +30,12 @@ class TLSPing:
         ('verify', bool, None),
         ('count', int, lambda x: 1 <= x <= 16),
     ]
-
-    def __valueInit(self) -> None:  # load default values
-        self.host = ''
-        self.v6First = False
-        self.verify = True
-        self.count = 4
+    server = None  # load default values
+    port = None
+    host = None
+    v6First = False
+    verify = True
+    count = 4
 
     def __valueCheck(self) -> None:  # check parameter values
         checker('TLSPing', self.rules,
@@ -50,23 +51,22 @@ class TLSPing:
         logger.debug('[%s] TLSPing count -> %d' % (self.id, self.count))
 
     def __runTlsping(self) -> str:  # get raw output of tlsping command
-        # TODO: show each result
         tlspingCmd = ['tlsping', '-json', '-c', str(self.count)]
         if self.host != '':
             tlspingCmd += ['-host', self.host]
         if not self.verify:
             tlspingCmd += ['-insecure']
         tlspingCmd += ['%s:%d' % (self.server, self.port)]
-        logger.debug('[%s] TCPing command -> %s' % (self.id, tlspingCmd))
+        logger.debug('[%s] TLSPing command -> %s' % (self.id, tlspingCmd))
         process = runProcess(self.id, tlspingCmd, None)
-        process.wait()  # wait ping process exit
+        process.wait()  # wait tlsping process exit
         output = process.stdout.read().decode()
         logger.debug('[%s] TLSPing raw output ->\n%s' % (self.id, output))
         return output
 
     def __analyse(self, raw: str) -> dict:  # analyse tlsping output
         try:
-            output = json.loads(raw)
+            raw = json.loads(raw)
         except:
             return {
                 'ip': self.server,  # actual address
@@ -79,9 +79,10 @@ class TLSPing:
             'port': self.port,
             'host': self.host,
             'alive': True,  # server online
-            'statistics': {
-                'count': int(output['count']),
-                # TODO: analyse result
+            'result': {
+                'raw': [float('%.5f' % x) for x in raw['raw']],  # raw latency result
+                'count': int(raw['count']),  # number of transmit tcping
+                # TODO: analyse result -> avg / min / max / cv ...
                 # 'avg': format(float(output['average']) * 1000, '.3f'),
                 # 'min': format(float(output['min']) * 1000, '.3f'),
                 # 'max': format(float(output['max']) * 1000, '.3f'),
@@ -91,19 +92,28 @@ class TLSPing:
 
     def __init__(self, server: str, port: int) -> None:
         self.id = genFlag()
-        self.__valueInit()
-        self.server = server  # load ping server
-        self.port = port # load tcping port
+        self.server = server  # load tlsping server
+        self.port = port # load tlsping port
         logger.debug('[%s] TLSPing task init -> %s(:%d)' % (self.id, self.server, self.port))
 
     def run(self) -> dict:
-        self.__valueCheck()
-        # TODO: fix host specify
-        if self.host == '':  # without host field
+        if self.host is None:  # without host field
             self.host = self.server
+        self.__valueCheck()
+        request = {
+            'server': self.server,
+            'port': self.port,
+            'host': self.host,
+            'v6First': self.v6First,
+            'verify': self.verify,
+            'count': self.count,
+        }
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
-        logger.info('[%s] TLSPing task -> %s(:%d)%s' % (self.id, self.server, self.port, ''))
+        logger.info('[%s] TLSPing task -> %s(:%d)[%s]' % (self.id, self.server, self.port, self.host))
         self.__valueDump()
-        result = self.__analyse(self.__runTlsping())
+        result = {
+            'request': request,
+            **self.__analyse(self.__runTlsping()),
+        }
         logger.info('[%s] TLSPing result -> %s' % (self.id, result))
         return result
