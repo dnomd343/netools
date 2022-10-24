@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 
-import re
 from utils import logger
-
-
-def typeStr(t: type) -> str:  # get python type name
-    match = re.search(r'^<class \'(\S+)\'>$', str(t))
-    if match is not None:
-        return match[1]  # <class 'xxx'>
-    return 'unknown'
+from utils.sundry import typeStr
 
 
 def checker(caption: str, rules: list, *args) -> None:

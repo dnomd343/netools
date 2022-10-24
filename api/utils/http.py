@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import json
+from utils import logger
+from utils import typeStr
 from flask import request
 from flask import Response
+from utils import toInt
+from utils import toBool
 
 
 def jsonResponse(data: dict) -> Response:  # return json mime
@@ -29,3 +33,15 @@ def httpArgument(field: str) -> str or None:
         return request.args.get(field)
     elif request.method == 'POST':
         return httpPostArg(field)
+
+
+def getArgument(field: str, fieldType: type):  # file argument from http request
+    arg = httpArgument(field)
+    if arg is None:  # field not exist
+        return None
+    if fieldType == int:
+        arg = toInt(field, arg)
+    elif fieldType == bool:
+        arg = toBool(field, arg)
+    logger.debug('Get Argument `%s` type `%s` -> `%s`' % (field, typeStr(fieldType), arg))
+    return arg

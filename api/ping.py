@@ -6,9 +6,9 @@ from utils import logger
 from flask import Response
 from api.utils import webApi
 from api.utils import tokenCheck
+from api.utils import getArgument
 from api.utils import httpArgument
 from api.utils import jsonResponse
-from api.utils import toInt, toBool
 
 
 def pingMethod() -> dict:
@@ -19,18 +19,21 @@ def pingMethod() -> dict:
         raise RuntimeError('Missing `server` option')
     ping = Ping(server)
 
-    # TODO: combine check args process
+    # TODO: enhance fill process
+    if getArgument('v6First', bool) is not None:
+        ping.v6First = getArgument('v6First', bool)
 
-    # if pingArgs['v6First'] is not None:
-    #     ping.v6First = toBool('v6First', pingArgs['v6First'])
-    # if pingArgs['count'] is not None:
-    #     ping.count = toInt('count', pingArgs['count'])
-    # if pingArgs['fast'] is not None:
-    #     ping.fast = toBool('fast', pingArgs['fast'])
-    # if pingArgs['size'] is not None:
-    #     ping.size = toBool('size', pingArgs['size'])
-    # if pingArgs['timeout'] is not None:
-    #     ping.timeout = toInt('timeout', pingArgs['timeout'])
+    if getArgument('count', int) is not None:
+        ping.count = getArgument('count', int)
+
+    if getArgument('fast', bool) is not None:
+        ping.fast = getArgument('fast', bool)
+
+    if getArgument('size', bool) is not None:
+        ping.size = getArgument('size', bool)
+
+    if getArgument('timeout', int) is not None:
+        ping.timeout = getArgument('timeout', int)
 
     return ping.run()
 
