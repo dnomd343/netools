@@ -5,6 +5,7 @@ import re
 from utils import logger
 from utils import isHost
 from utils import isPort
+from utils import getAvg
 from utils import host2IP
 from utils import checker
 from utils import genFlag
@@ -82,7 +83,9 @@ class TCPing:
                 tcpingTime = float(tcpingTime[:-1]) * 1000
             else:  # skip others time format
                 continue
-            result.append(tcpingTime)
+            result.append(
+                float('%.3f' % tcpingTime)
+            )
         if len(result) == 0:
             return {
                 'ip': self.server,  # actual address
@@ -98,6 +101,7 @@ class TCPing:
                 'count': self.count,  # number of transmit tcping
                 'reply': len(result),  # number of successful tcping
                 'rate': '%s%%' % format(len(result) / self.count * 100, '.1f'),  # success rate
+                'avg': '%.3f' % getAvg(result),  # average latency
                 # TODO: result analyse -> avg / cv ...
             }
         }
