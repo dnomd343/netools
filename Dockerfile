@@ -21,9 +21,7 @@ RUN mv tcping /tmp/
 FROM ${GOLANG} AS tlsping
 RUN apk add git
 RUN git clone https://github.com/dnomd343/tlsping.git
-WORKDIR ./tlsping/
-RUN go mod init github.com/dnomd343/tlsping
-WORKDIR ./cmd/tlsping/
+WORKDIR ./tlsping/cmd/tlsping/
 RUN env CGO_ENABLED=0 go build -v -trimpath -ldflags \
       "-X main.appVersion=$(git describe --tag) -X 'main.appBuildTime=$(date "+%Y-%m-%d %H:%M:%S")' -s -w"
 RUN mv tlsping /tmp/
