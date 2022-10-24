@@ -109,10 +109,20 @@ class TCPing:
 
     def run(self) -> dict:
         self.__valueCheck()
-        # TODO: load request values
+        request = {
+            'server': self.server,
+            'port': self.port,
+            'v6First': self.v6First,
+            'fast': self.fast,
+            'count': self.count,
+            'timeout': self.timeout,
+        }
         self.server = host2IP(self.server, self.v6First)  # convert into ip address
         logger.info('[%s] TCPing task -> %s(:%d)' % (self.id, self.server, self.port))
         self.__valueDump()
-        result = self.__analyse(self.__runTcping())
+        result = {
+            'request': request,
+            **self.__analyse(self.__runTcping()),
+        }
         logger.info('[%s] TCPing result -> %s' % (self.id, result))
         return result
