@@ -3,7 +3,7 @@
 
 # TODO: load options from env vars and start params
 
-Version = 'dev'
+Version = '0.0.9'
 
 ApiPort = 5633
 ApiToken = 'dnomd343'

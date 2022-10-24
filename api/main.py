@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import json
 from utils import logger
 from gevent import pywsgi
 from flask import Response
 from api.utils import webApi
 from api.utils import tokenCheck
+from api.utils import jsonResponse
 from utils.constant import Version
 from utils.constant import ApiToken
-
-
 
 
 @webApi.route('/token', methods = ['GET'])

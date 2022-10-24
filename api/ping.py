@@ -14,22 +14,23 @@ from api.utils import toInt, toBool
 def pingMethod() -> dict:
     if not tokenCheck():
         raise RuntimeError('Invalid token')
-    pingArgs = httpArgument(['server', 'v6First', 'count', 'fast', 'size', 'timeout'])
-    if pingArgs['server'] is None:
+    server = httpArgument('server')
+    if server is None:
         raise RuntimeError('Missing `server` option')
-    ping = Ping(pingArgs['server'])
+    ping = Ping(server)
 
     # TODO: combine check args process
-    if pingArgs['v6First'] is not None:
-        ping.v6First = toBool('v6First', pingArgs['v6First'])
-    if pingArgs['count'] is not None:
-        ping.count = toInt('count', pingArgs['count'])
-    if pingArgs['fast'] is not None:
-        ping.fast = toBool('fast', pingArgs['fast'])
-    if pingArgs['size'] is not None:
-        ping.size = toBool('size', pingArgs['size'])
-    if pingArgs['timeout'] is not None:
-        ping.timeout = toInt('timeout', pingArgs['timeout'])
+
+    # if pingArgs['v6First'] is not None:
+    #     ping.v6First = toBool('v6First', pingArgs['v6First'])
+    # if pingArgs['count'] is not None:
+    #     ping.count = toInt('count', pingArgs['count'])
+    # if pingArgs['fast'] is not None:
+    #     ping.fast = toBool('fast', pingArgs['fast'])
+    # if pingArgs['size'] is not None:
+    #     ping.size = toBool('size', pingArgs['size'])
+    # if pingArgs['timeout'] is not None:
+    #     ping.timeout = toInt('timeout', pingArgs['timeout'])
 
     return ping.run()
 

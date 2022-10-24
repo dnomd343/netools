@@ -85,16 +85,17 @@ class Ping:
                 'alive': False,  # server offline
             }
         ttlValue = [x[0] for x in result]
+        rawResult = [float(x[1]) for x in result]
         return {
             'ip': self.server,  # actual address
             'alive': True,  # server online
             'ttl': max(ttlValue, key = ttlValue.count),  # element with the most occurrences
             'result': {
-                'raw': [float(x[1]) for x in result],  # raw latency result
+                'raw': rawResult,  # raw latency result
                 'count': int(sendTimes),  # number of transmit ping
                 'reply': len(result),  # number of successful ping
                 'rate': '%s%%' % format(len(result) / int(sendTimes) * 100, '.1f'),  # success rate
-                # TODO: add result statistic -> avg / cv ...
+                # TODO: add result statistic -> avg / cv ... (by rawResult)
             }
         }
 
