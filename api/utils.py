@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
+from flask import Flask
 from flask import request
+from flask import Response
 from utils.constant import ApiToken
+
+webApi = Flask(__name__)  # init flask server
+
+
+def jsonResponse(data: dict) -> Response:  # return json mime
+    return Response(json.dumps(data), mimetype = 'application/json')
 
 
 def httpPostArg(field: str) -> dict or str or None: # get HTTP POST param

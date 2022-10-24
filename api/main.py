@@ -4,16 +4,13 @@
 import json
 from utils import logger
 from gevent import pywsgi
+from flask import Response
+from api.utils import webApi
 from api.utils import tokenCheck
 from utils.constant import Version
 from utils.constant import ApiToken
-from flask import Flask, Response, request
-
-webApi = Flask(__name__)  # init flask server
 
 
-def jsonResponse(data: dict) -> Response:  # return json mime
-    return Response(json.dumps(data), mimetype = 'application/json')
 
 
 @webApi.route('/token', methods = ['GET'])
