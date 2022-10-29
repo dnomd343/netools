@@ -5,7 +5,7 @@
 
 import os
 
-Version = '0.0.9'
+Version = '0.9.0-dev'
 
 ApiPort = 5633
 ApiToken = 'dnomd343'
