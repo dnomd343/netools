@@ -7,7 +7,6 @@ from flask import Response
 from api.utils import webApi
 from api.utils import tokenCheck
 from api.utils import getArgument
-from api.utils import httpArgument
 from api.utils import jsonResponse
 
 
@@ -20,25 +19,15 @@ def tcpingMethod() -> dict:
         raise RuntimeError('Missing `server` option')
     if port is None:
         raise RuntimeError('Missing `port` option')
-
     tcping = TCPing(server, port)
-
-    # TODO: enhance fill process
-    # if getArgument('v6First', bool) is not None:
-    #     tcping.v6First = getArgument('v6First', bool)
-    #
-    # if getArgument('count', int) is not None:
-    #     tcping.count = getArgument('count', int)
-    #
-    # if getArgument('fast', bool) is not None:
-    #     tcping.fast = getArgument('fast', bool)
-    #
-    # if getArgument('size', bool) is not None:
-    #     tcping.size = getArgument('size', bool)
-    #
-    # if getArgument('timeout', int) is not None:
-    #     tcping.timeout = getArgument('timeout', int)
-
+    v6First = getArgument('v6First', bool)
+    fast = getArgument('fast', bool)
+    count = getArgument('count', int)
+    timeout = getArgument('timeout', int)
+    if v6First is not None: tcping.v6First = v6First
+    if fast is not None: tcping.fast = fast
+    if count is not None: tcping.count = count
+    if timeout is not None: tcping.timeout = timeout
     return tcping.run()
 
 

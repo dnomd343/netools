@@ -7,34 +7,26 @@ from flask import Response
 from api.utils import webApi
 from api.utils import tokenCheck
 from api.utils import getArgument
-from api.utils import httpArgument
 from api.utils import jsonResponse
 
 
 def pingMethod() -> dict:
     if not tokenCheck():
         raise RuntimeError('Invalid token')
-    server = httpArgument('server')
+    server = getArgument('server', str)
     if server is None:
         raise RuntimeError('Missing `server` option')
     ping = Ping(server)
-
-    # TODO: enhance fill process
-    if getArgument('v6First', bool) is not None:
-        ping.v6First = getArgument('v6First', bool)
-
-    if getArgument('count', int) is not None:
-        ping.count = getArgument('count', int)
-
-    if getArgument('fast', bool) is not None:
-        ping.fast = getArgument('fast', bool)
-
-    if getArgument('size', bool) is not None:
-        ping.size = getArgument('size', bool)
-
-    if getArgument('timeout', int) is not None:
-        ping.timeout = getArgument('timeout', int)
-
+    v6First = getArgument('v6First', bool)
+    count = getArgument('count', int)
+    fast = getArgument('fast', bool)
+    size = getArgument('size', int)
+    timeout = getArgument('timeout', int)
+    if v6First is not None: ping.v6First = v6First
+    if count is not None: ping.count = count
+    if fast is not None: ping.fast = fast
+    if size is not None: ping.size = size
+    if timeout is not None: ping.timeout = timeout
     return ping.run()
 
 
