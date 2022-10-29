@@ -5,7 +5,7 @@ ARG PYTHON="python:3.10-alpine3.16"
 FROM ${PYTHON} AS wheels
 WORKDIR /wheels/
 RUN apk add build-base libffi-dev
-RUN pip3 wheel dnspython flask gevent IPy
+RUN pip3 wheel colorlog dnspython flask gevent IPy
 RUN ls *.whl | xargs -n1 unzip -d ./site-packages/ && rm *.whl && rm -rf $(find ./ -name '__pycache__')
 RUN cd /usr/local/lib/python*/ && mkdir -p /packages/$(basename ${PWD})/ && mv /wheels/* /packages/python*/
 
@@ -21,9 +21,7 @@ RUN mv tcping /tmp/
 FROM ${GOLANG} AS tlsping
 RUN apk add git
 RUN git clone https://github.com/dnomd343/tlsping.git
-WORKDIR ./tlsping/
-RUN go mod init github.com/dnomd343/tlsping
-WORKDIR ./cmd/tlsping/
+WORKDIR ./tlsping/cmd/tlsping/
 RUN env CGO_ENABLED=0 go build -v -trimpath -ldflags \
       "-X main.appVersion=$(git describe --tag) -X 'main.appBuildTime=$(date "+%Y-%m-%d %H:%M:%S")' -s -w"
 RUN mv tlsping /tmp/
