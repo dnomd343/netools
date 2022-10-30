@@ -4,7 +4,7 @@
 import sys
 import logging
 import colorlog
-from utils.constant import LogLevel, LogFile
+from utils.constant import LogFile
 
 logColor = {  # log color
     'DEBUG': 'white',
@@ -13,14 +13,6 @@ logColor = {  # log color
     'ERROR': 'red',
     'CRITICAL': 'bold_red',
 }
-
-logLevel = {  # log level
-    'debug': logging.DEBUG,
-    'info': logging.INFO,
-    'warning': logging.WARNING,
-    'error': logging.ERROR,
-    'critical': logging.CRITICAL
-}[LogLevel.lower()]
 
 dateFormat = '%Y-%m-%d %H:%M:%S'
 timeFormat = '%(asctime)s.%(msecs)03d'
@@ -42,7 +34,7 @@ stdHandler.setFormatter(colorlog.ColoredFormatter(
     log_colors = logColor,
     stream = sys.stderr
 ))
-stdHandler.setLevel(logLevel)  # custom level for stderr
+stdHandler.setLevel(logging.INFO)  # info level for stderr
 
 logger = logging.getLogger()
 logger.addHandler(stdHandler)

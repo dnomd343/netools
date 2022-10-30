@@ -8,7 +8,7 @@ Version = '0.9.0-dev'
 ApiPort = 5633
 ApiToken = 'dnomd343'
 
-LogLevel = 'info'
+# LogLevel = 'info'
 LogFile = 'runtime.log'
 
 # TODO: load options from env vars
