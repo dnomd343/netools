@@ -3,15 +3,14 @@
 
 import os
 
-Version = '0.9.0-dev'
-
 ApiPort = 5633
+# TODO: remove default token before release
 ApiToken = 'dnomd343'
+Version = '0.9.1-dev'
 
-# LogLevel = 'info'
-LogFile = 'runtime.log'
+environ = {x.lower(): os.environ[x] for x in os.environ}
 
-# TODO: load options from env vars
-
-if 'token' in os.environ:
-    ApiToken = os.environ['token']
+if 'port' in environ:  # load port option from env
+    ApiPort = environ['port']
+if 'token' in environ:  # load token option from env
+    ApiToken = environ['token']

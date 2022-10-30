@@ -4,7 +4,6 @@
 import sys
 import logging
 import colorlog
-from utils.constant import LogFile
 
 logColor = {  # log color
     'DEBUG': 'white',
@@ -19,7 +18,7 @@ timeFormat = '%(asctime)s.%(msecs)03d'
 logFormat = '[%(levelname)s] %(message)s (%(module)s.%(funcName)s:%(lineno)d)'
 
 # load fileHandler -> log file
-fileHandler = logging.FileHandler(LogFile, encoding = 'utf-8')
+fileHandler = logging.FileHandler('runtime.log', encoding = 'utf-8')
 fileHandler.setFormatter(logging.Formatter(
     '[' + timeFormat + '] ' + logFormat,
     datefmt = dateFormat
