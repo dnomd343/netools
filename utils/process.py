@@ -26,7 +26,7 @@ for path in libcSysPaths:
 if libcPath is None:  # lost libc.so -> unable to utilize prctl
     logger.warning('Dynamic link library `libc.so` not found')
 else:
-    logger.info('Dynamic link library `libc.so` located -> %s' % libcPath)
+    logger.debug('Dynamic link library `libc.so` located -> %s' % libcPath)
 
 
 def runProcess(taskFlag: str, command: list, envVar: dict or None):  # running sub-process
