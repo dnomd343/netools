@@ -5,6 +5,8 @@ from utils.logger import logger
 from utils.checker import checker
 
 from utils.math import getAvg
+from utils.math import getMin
+from utils.math import getMax
 
 from utils.sundry import toInt
 from utils.sundry import toBool

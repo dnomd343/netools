@@ -6,6 +6,8 @@ from utils import logger
 from utils import isHost
 from utils import isPort
 from utils import getAvg
+from utils import getMin
+from utils import getMax
 from utils import host2IP
 from utils import checker
 from utils import genFlag
@@ -101,7 +103,9 @@ class TCPing:
                 'reply': len(result),  # number of successful tcping
                 'rate': '%s%%' % format(len(result) / self.count * 100, '.1f'),  # success rate
                 'avg': '%.3f' % getAvg(result),  # average latency
-                # TODO: result analyse -> avg / cv ...
+                'min': '%.3f' % getMin(result),  # minimum latency
+                'max': '%.3f' % getMax(result),  # maximum latency
+                # TODO: add result statistic -> cv ...
             }
         }
 

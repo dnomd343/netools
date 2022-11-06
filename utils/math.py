@@ -6,3 +6,11 @@ def getAvg(raw: list) -> float:
     for val in raw:
         valSum += val
     return valSum / len(raw)
+
+
+def getMin(raw: list) -> float:
+    return min(raw)
+
+
+def getMax(raw: list) -> float:
+    return max(raw)
