@@ -30,7 +30,10 @@ def getVersion() -> Response:
     })
 
 
-def startServer(apiPort: int) -> None:
+def startServer(apiPort: int, devMode: bool = False) -> None:
     logger.warning('API server at http://:%i/' % apiPort)
     logger.warning('API ' + ('without token' if ApiToken == '' else 'token -> `%s`' % ApiToken))
-    pywsgi.WSGIServer(('0.0.0.0', apiPort), webApi).serve_forever()  # powered by gevent
+    if devMode:
+        webApi.run(host = '0.0.0.0', port = apiPort, debug = True, threaded = True)
+    else:
+        pywsgi.WSGIServer(('0.0.0.0', apiPort), webApi).serve_forever()  # powered by gevent

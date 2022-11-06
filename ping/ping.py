@@ -4,11 +4,11 @@
 import re
 from utils import logger
 from utils import isHost
-from utils import getAvg
 from utils import checker
 from utils import host2IP
 from utils import genFlag
 from utils import runProcess
+from utils import resultAnalyse
 
 
 class Ping:
@@ -96,8 +96,7 @@ class Ping:
                 'count': int(sendTimes),  # number of transmit ping
                 'reply': len(result),  # number of successful ping
                 'rate': '%s%%' % format(len(result) / int(sendTimes) * 100, '.1f'),  # success rate
-                'avg': '%.3f' % getAvg(rawResult),  # average latency
-                # TODO: add result statistic -> avg / cv ... (by rawResult)
+                **resultAnalyse(rawResult),  # latency statistics
             }
         }
 
