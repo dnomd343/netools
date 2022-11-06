@@ -14,3 +14,12 @@ def getMin(raw: list) -> float:
 
 def getMax(raw: list) -> float:
     return max(raw)
+
+
+def resultAnalyse(raw: list) -> dict:
+    return {
+        'avg': '%.3f' % getAvg(raw),  # average latency
+        'min': '%.3f' % getMin(raw),  # minimum latency
+        'max': '%.3f' % getMax(raw),  # maximum latency
+        # TODO: add cv / sd statistics ...
+    }

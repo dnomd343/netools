@@ -5,13 +5,11 @@ import re
 from utils import logger
 from utils import isHost
 from utils import isPort
-from utils import getAvg
-from utils import getMin
-from utils import getMax
 from utils import host2IP
 from utils import checker
 from utils import genFlag
 from utils import runProcess
+from utils import resultAnalyse
 
 
 class TCPing:
@@ -102,10 +100,7 @@ class TCPing:
                 'count': self.count,  # number of transmit tcping
                 'reply': len(result),  # number of successful tcping
                 'rate': '%s%%' % format(len(result) / self.count * 100, '.1f'),  # success rate
-                'avg': '%.3f' % getAvg(result),  # average latency
-                'min': '%.3f' % getMin(result),  # minimum latency
-                'max': '%.3f' % getMax(result),  # maximum latency
-                # TODO: add result statistic -> cv ...
+                **resultAnalyse(result),  # latency statistics
             }
         }
 

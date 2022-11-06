@@ -5,13 +5,11 @@ import json
 from utils import logger
 from utils import isHost
 from utils import isPort
-from utils import getAvg
-from utils import getMin
-from utils import getMax
 from utils import checker
 from utils import host2IP
 from utils import genFlag
 from utils import runProcess
+from utils import resultAnalyse
 
 
 class TLSPing:
@@ -86,11 +84,7 @@ class TLSPing:
             'result': {
                 'raw': rawResult,  # raw latency result
                 'count': int(raw['count']),  # number of transmit tcping
-                'avg': '%.3f' % getAvg(rawResult),  # average latency
-                'min': '%.3f' % getMin(rawResult),  # minimum latency
-                'max': '%.3f' % getMax(rawResult),  # maximum latency
-                # TODO: add result statistic -> cv ...
-                # 'sd': format(float(output['stddev']) * 1000, '.3f')
+                **resultAnalyse(rawResult),  # latency statistics
             }
         }
 
