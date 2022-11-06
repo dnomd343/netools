@@ -24,17 +24,30 @@ The target server is normal
 ```json
 {
   "success": true,
-  "ip": "220.181.38.148",
+  "request": {
+    "server": "baidu.com",
+    "v6First": false,
+    "count": 4,
+    "fast": true,
+    "size": 56,
+    "timeout": 20
+  },
+  "ip": "39.156.66.10",
   "alive": true,
-  "ttl": 49,
-  "statistics": {
-    "count": 16,
-    "reply": 16,
+  "ttl": 43,
+  "result": {
+    "raw": [
+      45.812,
+      45.772,
+      48.428,
+      45.836
+    ],
+    "count": 4,
+    "reply": 4,
     "rate": "100.0%",
-    "avg": "38.345",
-    "min": "38.281",
-    "max": "38.417",
-    "sd": "0.029"
+    "avg": "46.462",
+    "min": "45.772",
+    "max": "48.428"
   }
 }
 ```
@@ -44,6 +57,14 @@ The target server is offline
 ```json
 {
   "success": true,
+  "request": {
+    "server": "255.255.255.255",
+    "v6First": false,
+    "count": 16,
+    "fast": true,
+    "size": 56,
+    "timeout": 20
+  },
   "ip": "255.255.255.255",
   "alive": false
 }
@@ -81,17 +102,30 @@ The tcp port of target server is open
 ```json
 {
   "success": true,
+  "request": {
+    "server": "ip.343.re",
+    "port": 443,
+    "v6First": false,
+    "fast": true,
+    "count": 4,
+    "timeout": 3
+  },
   "ip": "8.210.148.24",
-  "port": 80,
+  "port": 443,
   "alive": true,
-  "statistics": {
+  "result": {
+    "raw": [
+      1.992,
+      1.944,
+      1.814,
+      1.728
+    ],
     "count": 4,
     "reply": 4,
     "rate": "100.0%",
-    "avg": "3.208",
-    "min": "2.597",
-    "max": "3.462",
-    "sd": "0.358"
+    "avg": "1.869",
+    "min": "1.728",
+    "max": "1.992"
   }
 }
 ```
@@ -101,6 +135,14 @@ The target server is offline or the port is not open
 ```json
 {
   "success": true,
+  "request": {
+    "server": "ip.343.re",
+    "port": 8888,
+    "v6First": false,
+    "fast": true,
+    "count": 4,
+    "timeout": 3
+  },
   "ip": "8.210.148.24",
   "port": 8888,
   "alive": false
@@ -136,6 +178,8 @@ Invalid request or error in netools service
 <br/>
 
 The TLS connection of target server and port is normal
+
+# TODO: update tlsping response demo
 
 ```json
 {
